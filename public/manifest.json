@@ -1,0 +1,11 @@
+{
+  "short_name": "대똥여지도",
+  "name": "급똥러들을 위한 화장실 위치 공유 플랫폼",
+  "icons": [
+
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
