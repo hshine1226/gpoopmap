@@ -18,6 +18,10 @@ import ListItemText from "@material-ui/core/ListItemText";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MailIcon from "@material-ui/icons/Mail";
 import { Link } from "react-router-dom";
+import HomeIcon from "@material-ui/icons/Home";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
+import VpnKeyIcon from "@material-ui/icons/VpnKey";
 
 const drawerWidth = 240;
 
@@ -137,14 +141,36 @@ export default function Header() {
         </div>
         <Divider />
         <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-            <ListItem button key={text}>
+          <Link to="/" onClick={handleDrawerClose}>
+            <ListItem button key={"홈"}>
               <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                <HomeIcon />
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={"홈"} />
             </ListItem>
-          ))}
+          </Link>
+          <Link to="/join" onClick={handleDrawerClose}>
+            <ListItem button key={"회원가입"}>
+              <ListItemIcon>
+                <AssignmentIndIcon />
+              </ListItemIcon>
+              <ListItemText primary={"회원가입"} />
+            </ListItem>
+          </Link>
+          <Link to="/login" onClick={handleDrawerClose}>
+            <ListItem button key={"로그인"}>
+              <ListItemIcon>
+                <VpnKeyIcon />
+              </ListItemIcon>
+              <ListItemText primary={"로그인"} />
+            </ListItem>
+          </Link>
+          <ListItem button key={"로그아웃"}>
+            <ListItemIcon>
+              <ExitToAppIcon />
+            </ListItemIcon>
+            <ListItemText primary={"로그아웃"} />
+          </ListItem>
         </List>
         <Divider />
         <List>
