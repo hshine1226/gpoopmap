@@ -7,8 +7,8 @@ import {
 } from "react-router-dom";
 
 import Home from "Routes/Home";
+import Join from "Routes/Join";
 import Login from "./Login";
-import Join from "./Join";
 import Header from "./Header";
 import Input from "./Input";
 
