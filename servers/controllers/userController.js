@@ -27,12 +27,32 @@ export const postJoin = async (req, res) => {
 };
 
 export const postLogin = (req, res) => {
-  console.log(req.body);
-  passport.authenticate("local", (_, user) => {
+  passport.authenticate("local", (error, user, info) => {
+    if (error) {
+      console.log(error);
+    }
     if (user) {
-      res.send({ success: true });
+      console.log(user);
+      req.login(user, (error) => {
+        if (error) {
+          console.log(error);
+        }
+        res.send({ success: true });
+      });
     } else {
       res.send({ success: false });
     }
   })(req, res);
+};
+
+// export const postLogin = passport.authenticate("local");
+
+export const logout = (req, res) => {
+  try {
+    req.logout();
+    console.log("로그아웃...");
+    res.send({ success: true });
+  } catch {
+    res.send({ success: false });
+  }
 };
