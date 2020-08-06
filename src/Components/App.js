@@ -22,21 +22,11 @@ const theme = createMuiTheme({
 });
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: null,
-    };
-  }
+  state = {
+    user: null,
+  };
 
-  componentDidMount() {
-    fetch("http://localhost:6001/api/me")
-      .then((res) => res.json())
-      .then((data) => this.setState({ username: data.username }));
-  }
   render() {
-    const { username } = this.state;
-    console.log(username);
     return (
       <>
         <GlobalStyles />

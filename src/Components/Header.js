@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -22,6 +22,7 @@ import HomeIcon from "@material-ui/icons/Home";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
+import Axios from "axios";
 
 const drawerWidth = 240;
 
@@ -83,6 +84,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Header() {
+  const [login, setLogin] = useState(false);
+
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -94,6 +97,32 @@ export default function Header() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  const handleLogout = () => {
+    Axios.get("/logout").then((response) => {
+      const {
+        data: { success },
+      } = response;
+      if (success) {
+        setLogin(false);
+      }
+    });
+  };
+
+  useEffect(() => {
+    Axios.get("/api/me")
+      .then((response) => {
+        // if (response.data) {
+        //   console.log("dlTek.");
+        // }
+        if (response.data.user !== undefined) {
+          setLogin(true);
+        } else {
+          setLogin(false);
+        }
+      })
+      .catch((error) => console.log(error));
+  });
 
   return (
     <div className={classes.root}>
@@ -158,14 +187,23 @@ export default function Header() {
             </ListItem>
           </Link>
           <Link to="/login" onClick={handleDrawerClose}>
-            <ListItem button key={"로그인"}>
+            <ListItem
+              className={login ? classes.hide : null}
+              button
+              key={"로그인"}
+            >
               <ListItemIcon>
                 <VpnKeyIcon />
               </ListItemIcon>
               <ListItemText primary={"로그인"} />
             </ListItem>
           </Link>
-          <ListItem button key={"로그아웃"}>
+          <ListItem
+            className={login ? null : classes.hide}
+            button
+            key={"로그아웃"}
+            onClick={handleLogout}
+          >
             <ListItemIcon>
               <ExitToAppIcon />
             </ListItemIcon>

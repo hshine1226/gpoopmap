@@ -52,30 +52,14 @@ export default class Login extends React.Component {
     const { email, password } = this.state;
     console.log(email, password);
 
-    // Axios({
-    //   url: "http://127.0.0.1:6001/login",
-    //   method: "post",
-    //   data: {
-    //     email: email,
-    //     password: password,
-    //   },
-    // }).then((response) => console.log(response));
-    Axios.post("/login", {
+    await Axios.post("/login", {
       email: email,
       password: password,
-    })
-      .then((response) => {
-        console.log(response);
-        const {
-          data: { success },
-        } = response;
-        if (success) {
-          this.props.history.push("/");
-        } else {
-          alert("로그인에 실패했습니다. 아이디와 패스워드를 확인해주세요.");
-        }
-      })
-      .catch((error) => console.log(error));
+    }).then((response) => {
+      if (response.data.success === true) {
+        this.props.history.push("/");
+      }
+    });
   };
 
   render() {
