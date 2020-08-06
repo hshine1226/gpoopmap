@@ -4,7 +4,7 @@ import "./db";
 
 dotenv.config();
 
-const PORT = process.env.SERVER_PORT | 6000;
+const PORT = process.env.SERVER_PORT | 3001;
 
 const handleListener = () =>
   console.log(`✅Listening on: http://localhost:${PORT}`);
