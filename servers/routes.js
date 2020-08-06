@@ -7,6 +7,7 @@ const LOGOUT = "/logout";
 // API routes
 const API = "/api";
 const ME = "/me";
+const TOILET = "/toilet";
 
 const routes = {
   // Global routes
@@ -17,6 +18,7 @@ const routes = {
   // Api routes
   api: API,
   me: ME,
+  toilet: TOILET,
 };
 
 export default routes;
