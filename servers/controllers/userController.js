@@ -25,3 +25,14 @@ export const postJoin = async (req, res) => {
     }
   }
 };
+
+export const postLogin = (req, res) => {
+  console.log(req.body);
+  passport.authenticate("local", (_, user) => {
+    if (user) {
+      res.send({ success: true });
+    } else {
+      res.send({ success: false });
+    }
+  })(req, res);
+};
