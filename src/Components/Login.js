@@ -11,6 +11,7 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import Axios from "axios";
 
 function Copyright() {
   return (
@@ -25,87 +26,110 @@ function Copyright() {
   );
 }
 
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}));
+export default class Login extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      email: "",
+      password: "",
+    };
+  }
 
-export default function Login() {
-  const classes = useStyles();
+  handleEmailChange = (event) => {
+    this.setState({
+      email: event.target.value,
+    });
+  };
 
-  return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
-        <form className={classes.form} noValidate>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Sign In
-          </Button>
-          <Box display="flex" justifyContent="flex-end">
-            <Box>
-              <Link href="#" variant="body2">
-                {"아직 계정이 없으신가요?"}
-              </Link>
+  handlePasswordChange = (event) => {
+    this.setState({
+      password: event.target.value,
+    });
+  };
+
+  handleSubmit = async (event) => {
+    event.preventDefault();
+    const { email, password } = this.state;
+    console.log(email, password);
+
+    // Axios({
+    //   url: "http://127.0.0.1:6001/login",
+    //   method: "post",
+    //   data: {
+    //     email: email,
+    //     password: password,
+    //   },
+    // }).then((response) => console.log(response));
+    Axios.post("/login", {
+      email: email,
+      password: password,
+    })
+      .then((response) => {
+        console.log(response);
+        const {
+          data: { success },
+        } = response;
+        if (success) {
+          this.props.history.push("/");
+        } else {
+          alert("로그인에 실패했습니다. 아이디와 패스워드를 확인해주세요.");
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+
+  render() {
+    return (
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <div>
+          <Avatar>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign in
+          </Typography>
+          <form noValidate onSubmit={this.handleSubmit}>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+              onChange={this.handleEmailChange}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              onChange={this.handlePasswordChange}
+            />
+            <Button type="submit" fullWidth variant="contained" color="primary">
+              Sign In
+            </Button>
+            <Box display="flex" justifyContent="flex-end">
+              <Box>
+                <Link href="#" variant="body2">
+                  {"아직 계정이 없으신가요?"}
+                </Link>
+              </Box>
             </Box>
-          </Box>
-        </form>
-      </div>
-      <Box mt={8}>
-        <Copyright />
-      </Box>
-    </Container>
-  );
+          </form>
+        </div>
+        <Box mt={8}>
+          <Copyright />
+        </Box>
+      </Container>
+    );
+  }
 }
