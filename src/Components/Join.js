@@ -16,7 +16,7 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
-      <Link color="inherit" href="https://material-ui.com/">
+      <Link color="inherit" href="#">
         대똥여지도
       </Link>{" "}
       {new Date().getFullYear()}
@@ -28,7 +28,6 @@ function Copyright() {
 export default class Join extends React.Component {
   constructor(props) {
     super(props);
-    console.log(props);
 
     this.state = {
       name: "",
@@ -92,7 +91,7 @@ export default class Join extends React.Component {
     });
 
     axios
-      .post("http://localhost:6001/join", {
+      .post("/join", {
         name,
         email,
         password,
@@ -104,10 +103,10 @@ export default class Join extends React.Component {
         } = response;
 
         if (success) {
-          console.log("회원가입 완료");
           this.setState({
             joinSuccess: true,
           });
+          this.props.history.push("/");
         } else {
           if (error === "Invalidpassword") {
             this.setState({
@@ -115,13 +114,11 @@ export default class Join extends React.Component {
               passwordHelperText: "비밀번호를 확인해주세요.",
             });
             this.inputPassword.querySelector("input").focus();
-            console.log("패스워드 불일치");
           } else if (error === "userExist") {
             this.setState({
               emailError: true,
               emailHelperText: "해당 이메일이 존재합니다.",
             });
-            console.log("유저 존재");
           }
         }
       })
@@ -144,13 +141,8 @@ export default class Join extends React.Component {
   onRefPassword2 = (c) => {
     this.inputPassword2 = c;
   };
-  componentDidMount() {
-    console.log("Mount");
-    console.log(this.props.history);
-  }
+
   render() {
-    console.log("render");
-    console.log("props:", this.props);
     const {
       emailError,
       emailHelperText,
@@ -158,10 +150,6 @@ export default class Join extends React.Component {
       passwordHelperText,
       joinSuccess,
     } = this.state;
-
-    if (joinSuccess) {
-      console.log(this.props);
-    }
 
     return (
       <Container component="main" maxWidth="xs">
