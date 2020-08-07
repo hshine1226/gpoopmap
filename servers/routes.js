@@ -8,6 +8,7 @@ const LOGOUT = "/logout";
 const API = "/api";
 const ME = "/me";
 const TOILET = "/toilet";
+const NEAR = "/near";
 
 const routes = {
   // Global routes
@@ -19,6 +20,7 @@ const routes = {
   api: API,
   me: ME,
   toilet: TOILET,
+  near: NEAR,
 };
 
 export default routes;
