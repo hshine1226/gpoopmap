@@ -13,11 +13,19 @@ import NavigationIcon from "@material-ui/icons/Navigation";
 import AddIcon from "@material-ui/icons/Add";
 import Tooltip from "@material-ui/core/Tooltip";
 import Axios from "axios";
+import { Alert } from "@material-ui/lab";
 
 const Container = styled.div`
   width: 100%;
   height: calc(100vh - 65px);
   position: relative;
+`;
+
+const AlertContainer = styled.div`
+  z-index: 3;
+  right: 75px;
+  bottom: 205px;
+  position: absolute;
 `;
 
 export class GoogleMap extends Component {
@@ -33,6 +41,8 @@ export class GoogleMap extends Component {
       currentLoc: null,
       clickAddToilet: false,
       nearToilets: [],
+      isCurrentLoc: false,
+      login: false,
     };
   }
 
@@ -66,6 +76,7 @@ export class GoogleMap extends Component {
         this.setState({
           center: { lat, lng },
           currentLoc: { lat, lng },
+          isCurrentLoc: true,
         });
       };
 
@@ -81,7 +92,6 @@ export class GoogleMap extends Component {
       lat: this.state.center.lat,
     }).then((response) => {
       const { data: nearToilets } = response;
-      console.log(nearToilets);
       this.setState({
         nearToilets,
       });
@@ -103,13 +113,17 @@ export class GoogleMap extends Component {
       currentLoc: marker.position,
     });
   };
-  handleAddToilet = (event) => {
-    console.log(event);
+
+  handleAddToilet = (history) => (event) => {
+    console.log(this.state.currentLoc);
+    if (this.state.currentLoc) {
+      console.log(history);
+      history.push("/add", this.state.currentLoc);
+    }
   };
 
   centerMoved = (mapProps, map) => {
     // console.log("mapProps", mapProps);
-    console.log("Map", map.center);
     const lat = map.center.lat();
     const lng = map.center.lng();
     this.setState({
@@ -137,7 +151,15 @@ export class GoogleMap extends Component {
   };
 
   render() {
-    const { loading, center, currentLoc, nearToilets } = this.state;
+    console.log("Map rendered");
+    const { history } = this.props;
+    const {
+      loading,
+      center,
+      currentLoc,
+      nearToilets,
+      isCurrentLoc,
+    } = this.state;
 
     const iconStyle = {
       zIndex: 3,
@@ -186,18 +208,20 @@ export class GoogleMap extends Component {
                 />
               ))
             : null}
-          <Marker
-            name={"내위치"}
-            position={currentLoc}
-            icon={{
-              url: "https://image.flaticon.com/icons/png/512/66/66884.png",
-              anchor: new this.props.google.maps.Point(40, 40),
-              scaledSize: new this.props.google.maps.Size(30, 30),
-            }}
-            draggable={true}
-            onClick={this.onMyLocMarkerClick}
-            onDragend={this.myLocMoved}
-          />
+          {currentLoc ? (
+            <Marker
+              name={"현재 위치"}
+              position={currentLoc}
+              icon={{
+                url: "https://image.flaticon.com/icons/svg/3221/3221248.svg",
+                anchor: new this.props.google.maps.Point(40, 40),
+                scaledSize: new this.props.google.maps.Size(30, 30),
+              }}
+              draggable={true}
+              onClick={this.onMyLocMarkerClick}
+              onDragend={this.myLocMoved}
+            />
+          ) : null}
 
           <Circle
             radius={1000}
@@ -228,7 +252,7 @@ export class GoogleMap extends Component {
           </Tooltip>
         </Fab>
         <Tooltip
-          onClick={this.handleAddToilet}
+          onClick={this.handleAddToilet(history)}
           title="화장실 추가"
           aria-label="add"
           style={addStyle}
@@ -237,6 +261,11 @@ export class GoogleMap extends Component {
             <AddIcon />
           </Fab>
         </Tooltip>
+        {!isCurrentLoc ? (
+          <AlertContainer>
+            <Alert severity="info">현재 위치를 찾아주세요.</Alert>
+          </AlertContainer>
+        ) : null}
       </Container>
     );
   }
