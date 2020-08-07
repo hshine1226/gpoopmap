@@ -6,19 +6,28 @@ export const getMe = async (req, res) => {
 
 export const postToilet = async (req, res) => {
   const {
-    body: { lat, lng, name, type, hours },
+    body: { lat, lng, name, type, memo },
   } = req;
 
   try {
-    const toilet = await Toilet({
-      type,
-      name,
-      hours,
-      location: {
-        coordinates: [lat, lng],
-      },
-    });
-    toilet.save();
+    if (req.user) {
+      const toilet = await Toilet({
+        type,
+        name,
+        memo,
+        location: {
+          coordinates: [lng, lat],
+        },
+        creator: req.user.id,
+      });
+
+      req.user.toilets.push(toilet.id);
+      req.user.save();
+
+      console.log(req.user);
+      toilet.save();
+      res.status(200);
+    }
   } catch (error) {
     res.status(400);
     console.log(error);
