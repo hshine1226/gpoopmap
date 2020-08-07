@@ -6,13 +6,14 @@ export const getMe = async (req, res) => {
 
 export const postToilet = async (req, res) => {
   const {
-    body: { lat, lng, name, type },
+    body: { lat, lng, name, type, hours },
   } = req;
 
   try {
     const toilet = await Toilet({
       type,
       name,
+      hours,
       location: {
         coordinates: [lat, lng],
       },
@@ -30,8 +31,6 @@ export const postNearToilets = async (req, res) => {
   const {
     body: { lng, lat },
   } = req;
-
-  console.log(lng, lat);
 
   try {
     const toilet = await Toilet.find({
