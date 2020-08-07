@@ -50,7 +50,6 @@ export default class Login extends React.Component {
   handleSubmit = async (event) => {
     event.preventDefault();
     const { email, password } = this.state;
-    console.log(email, password);
 
     await Axios.post("/login", {
       email: email,
@@ -103,7 +102,7 @@ export default class Login extends React.Component {
             </Button>
             <Box display="flex" justifyContent="flex-end">
               <Box>
-                <Link href="#" variant="body2">
+                <Link href="/join" variant="body2">
                   {"아직 계정이 없으신가요?"}
                 </Link>
               </Box>
