@@ -10,6 +10,7 @@ const ToiletSchema = new mongoose.Schema({
     },
     coordinates: [Number],
   },
+  hours: String,
   createdAt: {
     type: Date,
     default: Date.now,
