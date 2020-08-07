@@ -40,6 +40,7 @@ const jsonToDB = () => {
             ],
           },
           type: response.records[i].구분,
+          hours: response.records[i].개방시간,
         });
         try {
           toilet.save();
