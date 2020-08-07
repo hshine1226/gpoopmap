@@ -25,3 +25,28 @@ export const postToilet = async (req, res) => {
     res.end();
   }
 };
+
+export const postNearToilets = async (req, res) => {
+  const {
+    body: { lng, lat },
+  } = req;
+
+  console.log(lng, lat);
+
+  try {
+    const toilet = await Toilet.find({
+      location: {
+        $near: {
+          $maxDistance: 1000,
+          $geometry: {
+            type: "Point",
+            coordinates: [lng, lat],
+          },
+        },
+      },
+    });
+    res.send(toilet);
+  } catch (error) {
+    console.log(error);
+  }
+};
