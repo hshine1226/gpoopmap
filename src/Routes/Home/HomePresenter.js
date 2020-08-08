@@ -7,12 +7,12 @@ import GoogleMap from "../../Components/GoogleMap";
 
 const Container = styled.div``;
 
-const HomePresenter = ({ loading }) =>
+const HomePresenter = ({ loading, history }) =>
   loading ? (
     <Loader />
   ) : (
     <Container>
-      <GoogleMap />
+      <GoogleMap history={history} />
     </Container>
   );
 
