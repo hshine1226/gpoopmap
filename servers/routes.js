@@ -1,26 +1,27 @@
 // Global routes
 const HOME = "/";
-const JOIN = "/join";
-const LOGIN = "/login";
-const LOGOUT = "/logout";
 
 // API routes
 const API = "/api";
+const JOIN = "/join";
+const LOGIN = "/login";
+const LOGOUT = "/user/logout";
 const ME = "/me";
-const TOILET = "/toilet";
-const NEAR = "/near";
+const POST_TOILET = "/toilet";
+const NEAR_TOILETS = "/toilets/nearby";
 
 const routes = {
   // Global routes
   home: HOME,
+
+  // Api routes
+  api: API,
   join: JOIN,
   login: LOGIN,
   logout: LOGOUT,
-  // Api routes
-  api: API,
   me: ME,
-  toilet: TOILET,
-  near: NEAR,
+  postToilet: POST_TOILET,
+  nearToilets: NEAR_TOILETS,
 };
 
 export default routes;
