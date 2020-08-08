@@ -91,7 +91,7 @@ export default class Join extends React.Component {
     });
 
     axios
-      .post("/join", {
+      .post("/api/join", {
         name,
         email,
         password,

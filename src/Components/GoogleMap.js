@@ -12,6 +12,7 @@ import Fab from "@material-ui/core/Fab";
 import NavigationIcon from "@material-ui/icons/Navigation";
 import AddIcon from "@material-ui/icons/Add";
 import Tooltip from "@material-ui/core/Tooltip";
+import ToiletCard from "./ToiletCard";
 import Axios from "axios";
 import { Alert } from "@material-ui/lab";
 
@@ -87,15 +88,12 @@ export class GoogleMap extends Component {
       console.log("Not Available");
     }
 
-    Axios.post("/api/near", {
-      lng: this.state.center.lng,
-      lat: this.state.center.lat,
-    }).then((response) => {
-      const { data: nearToilets } = response;
-      this.setState({
-        nearToilets,
-      });
-    });
+    Axios.get(
+      `/api/toilets/nearby?lat=${this.state.center.lat}&lng=${this.state.center.lng}`
+    ).then((response) => console.log(response));
+    // this.setState({
+    //   nearToilets,
+    // });
   };
 
   onMarkerClick = (props, marker, e) => {
@@ -151,7 +149,6 @@ export class GoogleMap extends Component {
   };
 
   render() {
-    console.log("Map rendered");
     const { history } = this.props;
     const {
       loading,
@@ -194,6 +191,8 @@ export class GoogleMap extends Component {
                 <Marker
                   key={toilet._id}
                   name={toilet.name}
+                  memo={toilet.memo}
+                  creator={toilet.creator ? toilet.creator : null}
                   position={{
                     lat: toilet.location.coordinates[1],
                     lng: toilet.location.coordinates[0],
@@ -236,9 +235,7 @@ export class GoogleMap extends Component {
             fillOpacity={0.2}
           />
           <InfoWindow marker={this.state.activeMarker} visible={true}>
-            <div>
-              <p>{this.state.activeMarker.name}</p>
-            </div>
+            <ToiletCard>{this.state.activeMarker}</ToiletCard>
           </InfoWindow>
         </Map>
         <Fab
@@ -263,7 +260,9 @@ export class GoogleMap extends Component {
         </Tooltip>
         {!isCurrentLoc ? (
           <AlertContainer>
-            <Alert severity="info">현재 위치를 찾아주세요.</Alert>
+            <Alert severity="info">
+              화장실을 등록하려면 현재 위치가 필요해요.
+            </Alert>
           </AlertContainer>
         ) : null}
       </Container>

@@ -51,7 +51,7 @@ export default class Login extends React.Component {
     event.preventDefault();
     const { email, password } = this.state;
 
-    await Axios.post("/login", {
+    await Axios.post("/api/login", {
       email: email,
       password: password,
     }).then((response) => {

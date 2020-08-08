@@ -84,11 +84,23 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Header() {
-  const [login, setLogin] = useState(false);
-
   const classes = useStyles();
   const theme = useTheme();
+
+  const [login, setLogin] = useState(false);
   const [open, setOpen] = React.useState(false);
+
+  useEffect(() => {
+    Axios.get("/api/me")
+      .then((response) => {
+        if (response.data.user !== undefined) {
+          setLogin(true);
+        } else {
+          setLogin(false);
+        }
+      })
+      .catch((error) => console.log(error));
+  });
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -99,7 +111,7 @@ export default function Header() {
   };
 
   const handleLogout = () => {
-    Axios.get("/logout").then((response) => {
+    Axios.get("/api/logout").then((response) => {
       const {
         data: { success },
       } = response;
@@ -108,21 +120,6 @@ export default function Header() {
       }
     });
   };
-
-  useEffect(() => {
-    Axios.get("/api/me")
-      .then((response) => {
-        // if (response.data) {
-        //   console.log("dlTek.");
-        // }
-        if (response.data.user !== undefined) {
-          setLogin(true);
-        } else {
-          setLogin(false);
-        }
-      })
-      .catch((error) => console.log(error));
-  });
 
   return (
     <div className={classes.root}>
