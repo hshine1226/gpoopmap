@@ -84,16 +84,20 @@ export class GoogleMap extends Component {
       navigator.geolocation.getCurrentPosition(success, (error) =>
         console.log(error)
       );
+
+      Axios.get("/api/toilets/nearby", {
+        params: { lat: this.state.center.lat, lng: this.state.center.lng },
+      }).then((response) => {
+        console.log(response);
+        const { data: nearToilets } = response;
+        console.log(nearToilets);
+        this.setState({
+          nearToilets,
+        });
+      });
     } else {
       console.log("Not Available");
     }
-
-    Axios.get(
-      `/api/toilets/nearby?lat=${this.state.center.lat}&lng=${this.state.center.lng}`
-    ).then((response) => console.log(response));
-    // this.setState({
-    //   nearToilets,
-    // });
   };
 
   onMarkerClick = (props, marker, e) => {
@@ -127,9 +131,8 @@ export class GoogleMap extends Component {
     this.setState({
       center: { lat, lng },
     });
-    Axios.post("/api/near", {
-      lng: lng,
-      lat: lat,
+    Axios.get("/api/toilets/nearby", {
+      params: { lng: lng, lat: lat },
     }).then((response) => {
       const { data: nearToilets } = response;
       console.log(nearToilets);

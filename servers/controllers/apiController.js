@@ -7,23 +7,12 @@ export const postJoin = async (req, res) => {
     body: { name, email, password, password2 },
   } = req;
 
-  console.log(req.body);
-
-  const user = await User.findOne({ email });
-
-  if (password !== password2) {
-    // 패스워드 불일치
-    res.send({ success: false, error: "Invalidpassword" });
-  } else if (user) {
-    res.send({ success: false, error: "userExist" });
-  } else {
-    try {
-      const user = await User({ name, email });
-      await User.register(user, password);
-      res.send({ success: true });
-    } catch (err) {
-      res.status(400);
-    }
+  try {
+    const user = await User({ name, email });
+    await User.register(user, password);
+    res.send({ success: true });
+  } catch (err) {
+    res.status(400);
   }
 };
 
@@ -46,8 +35,6 @@ export const postLogin = (req, res) => {
   })(req, res);
 };
 
-// export const postLogin = passport.authenticate("local");
-
 export const logout = (req, res) => {
   try {
     req.logout();
@@ -60,6 +47,22 @@ export const logout = (req, res) => {
 
 export const getMe = async (req, res) => {
   res.send({ user: req.user });
+};
+
+export const getUser = async (req, res) => {
+  const {
+    query: { email },
+  } = req;
+
+  const user = await User.findOne({ email });
+
+  if (user) {
+    res.send({ user, message: "User Exist" });
+    res.status(200);
+  } else {
+    res.send({ message: "User Doesn't Exist" });
+    res.status(400);
+  }
 };
 
 export const postToilet = async (req, res) => {
@@ -96,26 +99,26 @@ export const postToilet = async (req, res) => {
 };
 
 export const getNearToilets = async (req, res) => {
+  console.log("req", req);
   const {
     query: { lat, lng },
   } = req;
 
-  console.log(lat, lng);
-  // try {
-  //   const toilet = await Toilet.find({
-  //     location: {
-  //       $near: {
-  //         $maxDistance: 1000,
-  //         $geometry: {
-  //           type: "Point",
-  //           coordinates: [lng, lat],
-  //         },
-  //       },
-  //     },
-  //   }).populate("creator");
-  //   console.log(toilet);
-  //   res.send(toilet);
-  // } catch (error) {
-  //   console.log(error);
-  // }
+  try {
+    const toilet = await Toilet.find({
+      location: {
+        $near: {
+          $maxDistance: 1000,
+          $geometry: {
+            type: "Point",
+            coordinates: [lng, lat],
+          },
+        },
+      },
+    }).populate("creator");
+    console.log(toilet);
+    res.send(toilet);
+  } catch (error) {
+    console.log(error);
+  }
 };

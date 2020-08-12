@@ -11,6 +11,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import axios from "axios";
+import Axios from "axios";
 
 function Copyright() {
   return (
@@ -34,11 +35,14 @@ export default class Join extends React.Component {
       email: "",
       password: "",
       password2: "",
+      nameError: false,
       emailError: false,
-      emailHelperText: "",
       passwordError: false,
+      verifiedPasswordError: false,
+      nameHelperText: "",
+      emailHelperText: "",
       passwordHelperText: "",
-      joinSuccess: false,
+      verifiedPasswordHelperText: "",
     };
 
     this.handleNameChange = this.handleNameChange.bind(this);
@@ -68,61 +72,145 @@ export default class Join extends React.Component {
   }));
 
   handleNameChange(event) {
-    this.setState({ name: event.target.value });
+    const {
+      target: { value },
+    } = event;
+    this.setState({ name: value });
+
+    if (value.length < 2) {
+      this.setState({
+        nameError: true,
+        nameHelperText: "2자 이상의 이름을 입력해주세요.",
+      });
+    } else {
+      this.setState({
+        nameError: false,
+        nameHelperText: "",
+      });
+    }
   }
   handleEmailChange(event) {
-    this.setState({ email: event.target.value });
+    const {
+      target: { value },
+    } = event;
+    this.setState({ email: value });
+    const emailRegExp = /^[\w-]+(\.[\w-]+)*@([a-z0-9-]+(\.[a-z0-9-]+)*?\.[a-z]{2,6}|(\d{1,3}\.){3}\d{1,3})(:\d{4})?$/;
+
+    if (value.match(emailRegExp)) {
+      this.setState({
+        emailError: false,
+        emailHelperText: "",
+      });
+
+      Axios.get("api/users/user", {
+        params: { email: value },
+      }).then((response) => {
+        const {
+          data: { message },
+        } = response;
+        if (message === "User Exist") {
+          this.setState({
+            emailError: true,
+            emailHelperText: "해당 이메일이 존재합니다.",
+          });
+        } else {
+          this.setState({
+            emailError: false,
+            emailHelperText: "",
+          });
+        }
+      });
+    } else {
+      this.setState({
+        emailError: true,
+        emailHelperText: "유효한 이메일 주소를 입력해주세요.",
+      });
+    }
+
+    if (this.state.emailError === false) {
+    }
   }
   handlePWChange(event) {
-    this.setState({ password: event.target.value });
+    const {
+      target: { value },
+    } = event;
+    this.setState({ password: value });
+
+    if (value.length < 8) {
+      this.setState({
+        passwordError: true,
+        passwordHelperText: "8자 이상의 비밀번호를 입력해주세요.",
+      });
+    } else {
+      this.setState({
+        passwordError: false,
+        passwordHelperText: "",
+      });
+    }
   }
   handlePW2Change(event) {
-    this.setState({ password2: event.target.value });
+    const {
+      target: { value },
+    } = event;
+    this.setState({ password2: value });
+
+    if (value === this.state.password) {
+      this.setState({
+        verifiedPasswordError: false,
+        verifiedPasswordHelperText: "",
+      });
+    } else {
+      this.setState({
+        verifiedPasswordError: true,
+        verifiedPasswordHelperText: "일치하는 패스워드를 입력해주세요.",
+      });
+    }
   }
+
   async handleSubmit(event) {
     event.preventDefault();
-    const { name, email, password, password2 } = this.state;
+    const {
+      name,
+      email,
+      password,
+      password2,
+      nameError,
+      emailError,
+      passwordError,
+      verifiedPasswordError,
+    } = this.state;
 
-    this.setState({
-      emailError: false,
-      emailHelperText: "",
-      passwordError: false,
-      passwordHelperText: "",
-    });
+    if (!nameError && !emailError && !passwordError && !verifiedPasswordError) {
+      axios
+        .post("/api/join", {
+          name,
+          email,
+          password,
+          password2,
+        })
+        .then((response) => {
+          const {
+            data: { success, error },
+          } = response;
 
-    axios
-      .post("/api/join", {
-        name,
-        email,
-        password,
-        password2,
-      })
-      .then((response) => {
-        const {
-          data: { success, error },
-        } = response;
-
-        if (success) {
-          this.setState({
-            joinSuccess: true,
-          });
-          this.props.history.push("/");
-        } else {
-          if (error === "Invalidpassword") {
+          if (success) {
             this.setState({
-              passwordError: true,
-              passwordHelperText: "비밀번호를 확인해주세요.",
+              joinSuccess: true,
             });
-            this.inputPassword.querySelector("input").focus();
-          } else if (error === "userExist") {
-            this.setState({
-              emailError: true,
-              emailHelperText: "해당 이메일이 존재합니다.",
-            });
+            this.props.history.push("/");
+          } else {
+            if (error === "userExist") {
+              this.setState({
+                emailError: true,
+                emailHelperText: "해당 이메일이 존재합니다.",
+              });
+            }
           }
-        }
-      })
-      .catch((error) => console.log(error));
+        })
+        .catch((error) => console.log(error));
+    } else {
+      console.log("에러가 있어요");
+    }
   }
   inputName;
   inputEmail;
@@ -144,11 +232,14 @@ export default class Join extends React.Component {
 
   render() {
     const {
+      nameError,
+      nameHelperText,
       emailError,
       emailHelperText,
       passwordError,
       passwordHelperText,
-      joinSuccess,
+      verifiedPasswordError,
+      verifiedPasswordHelperText,
     } = this.state;
 
     return (
@@ -169,6 +260,8 @@ export default class Join extends React.Component {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
+                  error={nameError}
+                  helperText={nameHelperText}
                   autoComplete="fname"
                   name="name"
                   variant="outlined"
@@ -211,8 +304,8 @@ export default class Join extends React.Component {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  error={passwordError}
-                  helperText={passwordHelperText}
+                  error={verifiedPasswordError}
+                  helperText={verifiedPasswordHelperText}
                   variant="outlined"
                   required
                   fullWidth
