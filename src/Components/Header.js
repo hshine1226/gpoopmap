@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Header() {
+export default function Header(props) {
   const classes = useStyles();
   const theme = useTheme();
 
@@ -175,8 +175,20 @@ export default function Header() {
               <ListItemText primary={"홈"} />
             </ListItem>
           </Link>
+          <Link to="/profile" onClick={handleDrawerClose}>
+            <ListItem button key={"프로필"}>
+              <ListItemIcon>
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText primary={"프로필"} />
+            </ListItem>
+          </Link>
           <Link to="/join" onClick={handleDrawerClose}>
-            <ListItem button key={"회원가입"}>
+            <ListItem
+              button
+              key={"회원가입"}
+              className={login ? classes.hide : null}
+            >
               <ListItemIcon>
                 <AssignmentIndIcon />
               </ListItemIcon>
@@ -208,16 +220,6 @@ export default function Header() {
           </ListItem>
         </List>
         <Divider />
-        <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
       </Drawer>
     </div>
   );
