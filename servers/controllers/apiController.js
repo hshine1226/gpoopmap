@@ -22,12 +22,11 @@ export const postLogin = (req, res) => {
       console.log(error);
     }
     if (user) {
-      console.log(user);
       req.login(user, (error) => {
         if (error) {
           console.log(error);
         }
-        res.send({ success: true });
+        res.send({ success: true, user });
       });
     } else {
       res.send({ success: false });
@@ -70,6 +69,8 @@ export const postToilet = async (req, res) => {
     body: { lat, lng, name, type, memo },
   } = req;
 
+  console.log(lat, lng, name, type, memo);
+
   try {
     // 로그인한 유저만 화장실 등록 가능
     if (req.user) {
@@ -81,6 +82,7 @@ export const postToilet = async (req, res) => {
           coordinates: [lng, lat],
         },
         creator: req.user.id,
+        imageUrl: req.file ? req.file.location : "",
       });
 
       req.user.toilets.push(toilet.id);
