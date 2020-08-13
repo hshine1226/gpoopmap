@@ -28,6 +28,19 @@ const TextFieldContainer = styled.div`
   width: 350px;
 `;
 
+const ImageUpload = styled.input`
+  margin: 20px 0;
+  width: 100%;
+  height: 50px;
+  border: 1px solid black;
+  border-radius: 3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  text-align: center;
+`;
+
 export default function InputAdornments(props) {
   const {
     location: {
@@ -37,14 +50,19 @@ export default function InputAdornments(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(lat, lng, name, type, memo);
-    Axios.post("/api/toilet", { lat, lng, name, type, memo }).then(
-      (response) => {
-        if (response.status === 200) {
-          props.history.push("/");
-        }
+    console.log(lat, lng, name, type, memo, image);
+    const formData = new FormData();
+    formData.append("imageFile", image);
+    formData.append("lat", lat);
+    formData.append("lng", lng);
+    formData.append("name", name);
+    formData.append("type", type);
+    formData.append("memo", memo);
+    Axios.post("/api/toilet", formData).then((response) => {
+      if (response.status === 200) {
+        props.history.push("/");
       }
-    );
+    });
   };
 
   const handleLatChange = (event) => {
@@ -67,20 +85,25 @@ export default function InputAdornments(props) {
     setMemo(event.target.value);
   };
 
+  const handleImageChange = (event) => {
+    setImage(event.target.files[0]);
+  };
+
   const [lat, setLat] = useState(latt);
   const [lng, setLng] = useState(long);
   const [name, setName] = useState(null);
   const [type, setType] = useState("공중화장실");
   const [memo, setMemo] = useState(null);
+  const [image, setImage] = useState("");
 
   useEffect(() => {
-    console.log(lat, lng, name, type, memo);
+    console.log(lat, lng, name, type, memo, image);
   });
 
   return (
     <Container>
       <TextFieldContainer>
-        <form noValidate onSubmit={handleSubmit}>
+        <form noValidate onSubmit={handleSubmit} encType="multipart/form-data">
           <TextField
             variant="outlined"
             margin="normal"
@@ -146,6 +169,14 @@ export default function InputAdornments(props) {
               </MenuItem>
             ))}
           </TextField>
+
+          <ImageUpload
+            type="file"
+            name="imageFile"
+            id="file"
+            accept="image/*"
+            onChange={handleImageChange}
+          />
 
           <Button type="submit" fullWidth variant="contained" color="primary">
             제출하기
