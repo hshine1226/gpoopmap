@@ -15,6 +15,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import ToiletCard from "./ToiletCard";
 import Axios from "axios";
 import { Alert } from "@material-ui/lab";
+import Modal from "./Modal";
 
 const Container = styled.div`
   width: 100%;
@@ -28,6 +29,20 @@ const AlertContainer = styled.div`
   bottom: 205px;
   position: absolute;
 `;
+
+const iconStyle = {
+  zIndex: 3,
+  position: "absolute",
+  bottom: "200px",
+  right: "4px",
+};
+
+const addStyle = {
+  zIndex: 3,
+  position: "absolute",
+  bottom: "270px",
+  right: "4px",
+};
 
 export class GoogleMap extends Component {
   constructor(props) {
@@ -44,6 +59,9 @@ export class GoogleMap extends Component {
       nearToilets: [],
       isCurrentLoc: false,
       login: false,
+      modalOpen: false,
+      modalTitle: "",
+      user: null,
     };
   }
 
@@ -78,6 +96,7 @@ export class GoogleMap extends Component {
           center: { lat, lng },
           currentLoc: { lat, lng },
           isCurrentLoc: true,
+          showingInfoWindow: false,
         });
       };
 
@@ -117,15 +136,25 @@ export class GoogleMap extends Component {
   };
 
   handleAddToilet = (history) => (event) => {
-    console.log(this.state.currentLoc);
+    if (this.state.user === null) {
+      alert("로그인을 해주세요");
+    }
     if (this.state.currentLoc) {
       console.log(history);
       history.push("/add", this.state.currentLoc);
+    } else {
+      this.setState({
+        modalOpen: true,
+        modalTitle: "현재 위치를 등록해주세요.",
+      });
     }
   };
 
   centerMoved = (mapProps, map) => {
     // console.log("mapProps", mapProps);
+    this.setState({
+      showingInfoWindow: false,
+    });
     const lat = map.center.lat();
     const lng = map.center.lng();
     this.setState({
@@ -151,6 +180,18 @@ export class GoogleMap extends Component {
     });
   };
 
+  onMapClick = (mapProps, map, clickEvent) => {
+    this.setState({
+      showingInfoWindow: false,
+    });
+  };
+
+  onCircleClick = () => {
+    this.setState({
+      showingInfoWindow: false,
+    });
+  };
+
   render() {
     const { history } = this.props;
     const {
@@ -159,21 +200,10 @@ export class GoogleMap extends Component {
       currentLoc,
       nearToilets,
       isCurrentLoc,
+      showingInfoWindow,
+      modalOpen,
+      modalTitle,
     } = this.state;
-
-    const iconStyle = {
-      zIndex: 3,
-      position: "absolute",
-      bottom: "200px",
-      right: "4px",
-    };
-
-    const addStyle = {
-      zIndex: 3,
-      position: "absolute",
-      bottom: "270px",
-      right: "4px",
-    };
 
     if (loading) {
       return <Loader />;
@@ -186,7 +216,7 @@ export class GoogleMap extends Component {
           initialCenter={center}
           center={center}
           zoom={15}
-          onClick={this.addMarkers}
+          onClick={this.onMapClick}
           onDragend={this.centerMoved}
         >
           {nearToilets
@@ -206,6 +236,7 @@ export class GoogleMap extends Component {
                     anchor: new this.props.google.maps.Point(40, 40),
                     scaledSize: new this.props.google.maps.Size(30, 30),
                   }}
+                  imageUrl={toilet.imageUrl ? toilet.imageUrl : null}
                   onClick={this.onMarkerClick}
                 />
               ))
@@ -236,8 +267,12 @@ export class GoogleMap extends Component {
             strokeWeight={5}
             fillColor="#3F51B5"
             fillOpacity={0.2}
+            onClick={this.onCircleClick}
           />
-          <InfoWindow marker={this.state.activeMarker} visible={true}>
+          <InfoWindow
+            marker={this.state.activeMarker}
+            visible={showingInfoWindow}
+          >
             <ToiletCard>{this.state.activeMarker}</ToiletCard>
           </InfoWindow>
         </Map>
@@ -268,6 +303,8 @@ export class GoogleMap extends Component {
             </Alert>
           </AlertContainer>
         ) : null}
+
+        <Modal modalOpen={modalOpen} />
       </Container>
     );
   }
