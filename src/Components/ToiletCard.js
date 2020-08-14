@@ -24,7 +24,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function RecipeReviewCard(props) {
-  console.log("PROPSSSS", props);
   const {
     children: { name, memo, creator, imageUrl },
   } = props;

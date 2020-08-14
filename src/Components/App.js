@@ -22,10 +22,6 @@ const theme = createMuiTheme({
 });
 
 class App extends Component {
-  state = {
-    user: null,
-  };
-
   render() {
     return (
       <>
