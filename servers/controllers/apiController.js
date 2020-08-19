@@ -4,7 +4,7 @@ import User from "../models/User";
 
 export const postJoin = async (req, res) => {
   const {
-    body: { name, email, password, password2 },
+    body: { name, email, password },
   } = req;
 
   try {
