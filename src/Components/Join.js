@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -26,81 +26,71 @@ function Copyright() {
   );
 }
 
-export default class Join extends React.Component {
-  constructor(props) {
-    super(props);
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    marginTop: theme.spacing(8),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: "100%", // Fix IE 11 issue.
+    marginTop: theme.spacing(3),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+}));
 
-    this.state = {
-      name: "",
-      email: "",
-      password: "",
-      password2: "",
-      nameError: false,
-      emailError: false,
-      passwordError: false,
-      verifiedPasswordError: false,
-      nameHelperText: "",
-      emailHelperText: "",
-      passwordHelperText: "",
-      verifiedPasswordHelperText: "",
-    };
+export default function Join(props) {
+  console.log(props);
 
-    this.handleNameChange = this.handleNameChange.bind(this);
-    this.handleEmailChange = this.handleEmailChange.bind(this);
-    this.handlePWChange = this.handlePWChange.bind(this);
-    this.handlePW2Change = this.handlePW2Change.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-  useStyles = makeStyles((theme) => ({
-    paper: {
-      marginTop: theme.spacing(8),
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-    },
-    avatar: {
-      margin: theme.spacing(1),
-      backgroundColor: theme.palette.secondary.main,
-    },
-    form: {
-      width: "100%", // Fix IE 11 issue.
-      marginTop: theme.spacing(3),
-    },
-    submit: {
-      margin: theme.spacing(3, 0, 2),
-    },
-  }));
+  const classes = useStyles();
 
-  handleNameChange(event) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [password2, setPassword2] = useState("");
+  const [nameError, setNameError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [verifiedPasswordError, setVerifiedPasswordError] = useState(false);
+  const [nameHelperText, setNameHelperText] = useState("");
+  const [emailHelperText, setEmailHelperText] = useState("");
+  const [passwordHelperText, setPasswordHelperText] = useState("");
+  const [verifiedPasswordHelperText, setVerifiedPasswordHelperText] = useState(
+    ""
+  );
+
+  const handleNameChange = (event) => {
     const {
       target: { value },
     } = event;
-    this.setState({ name: value });
+    setName(value);
 
     if (value.length < 2) {
-      this.setState({
-        nameError: true,
-        nameHelperText: "2자 이상의 이름을 입력해주세요.",
-      });
+      setNameError(true);
+      setNameHelperText("2자 이상의 이름을 입력해주세요.");
     } else {
-      this.setState({
-        nameError: false,
-        nameHelperText: "",
-      });
+      setNameError(false);
+      setNameHelperText("");
     }
-  }
-  handleEmailChange(event) {
+  };
+
+  const handleEmailChange = (event) => {
     const {
       target: { value },
     } = event;
-    this.setState({ email: value });
+    setEmail(value);
     const emailRegExp = /^[\w-]+(\.[\w-]+)*@([a-z0-9-]+(\.[a-z0-9-]+)*?\.[a-z]{2,6}|(\d{1,3}\.){3}\d{1,3})(:\d{4})?$/;
 
     if (value.match(emailRegExp)) {
-      this.setState({
-        emailError: false,
-        emailHelperText: "",
-      });
+      setEmailError(false);
+      setEmailHelperText("");
 
       Axios.get("api/users/user", {
         params: { email: value },
@@ -109,76 +99,52 @@ export default class Join extends React.Component {
           data: { message },
         } = response;
         if (message === "User Exist") {
-          this.setState({
-            emailError: true,
-            emailHelperText: "해당 이메일이 존재합니다.",
-          });
+          setEmailError(true);
+          setEmailHelperText("해당 이메일이 이미 존재합니다.");
         } else {
-          this.setState({
-            emailError: false,
-            emailHelperText: "",
-          });
+          setEmailError(false);
+          setEmailHelperText("");
         }
       });
     } else {
-      this.setState({
-        emailError: true,
-        emailHelperText: "유효한 이메일 주소를 입력해주세요.",
-      });
+      setEmailError(true);
+      setEmailHelperText("유효한 이메일 주소를 입력해주세요.");
     }
+  };
 
-    if (this.state.emailError === false) {
-    }
-  }
-  handlePWChange(event) {
+  const handlePWChange = (event) => {
     const {
       target: { value },
     } = event;
-    this.setState({ password: value });
+
+    setPassword(value);
 
     if (value.length < 8) {
-      this.setState({
-        passwordError: true,
-        passwordHelperText: "8자 이상의 비밀번호를 입력해주세요.",
-      });
+      setPasswordError(true);
+      setPasswordHelperText("8자 이상의 비밀번호를 입력해주세요.");
     } else {
-      this.setState({
-        passwordError: false,
-        passwordHelperText: "",
-      });
+      setPasswordError(false);
+      setPasswordHelperText("");
     }
-  }
-  handlePW2Change(event) {
+  };
+  const handlePW2Change = (event) => {
     const {
       target: { value },
     } = event;
-    this.setState({ password2: value });
 
-    if (value === this.state.password) {
-      this.setState({
-        verifiedPasswordError: false,
-        verifiedPasswordHelperText: "",
-      });
+    setPassword2(value);
+
+    if (value === password) {
+      setVerifiedPasswordError(false);
+      setVerifiedPasswordHelperText("");
     } else {
-      this.setState({
-        verifiedPasswordError: true,
-        verifiedPasswordHelperText: "일치하는 패스워드를 입력해주세요.",
-      });
+      setVerifiedPasswordError(true);
+      setVerifiedPasswordHelperText("일치하는 패스워드를 입력해주세요.");
     }
-  }
+  };
 
-  async handleSubmit(event) {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const {
-      name,
-      email,
-      password,
-      password2,
-      nameError,
-      emailError,
-      passwordError,
-      verifiedPasswordError,
-    } = this.state;
 
     if (!nameError && !emailError && !passwordError && !verifiedPasswordError) {
       axios
@@ -194,16 +160,11 @@ export default class Join extends React.Component {
           } = response;
 
           if (success) {
-            this.setState({
-              joinSuccess: true,
-            });
-            this.props.history.push("/");
+            props.history.push("/");
           } else {
             if (error === "userExist") {
-              this.setState({
-                emailError: true,
-                emailHelperText: "해당 이메일이 존재합니다.",
-              });
+              setEmailError(true);
+              setEmailHelperText("해당 이메일이 존재합니다.");
             }
           }
         })
@@ -211,135 +172,101 @@ export default class Join extends React.Component {
     } else {
       console.log("에러가 있어요");
     }
-  }
-  inputName;
-  inputEmail;
-  inputPassword;
-  inputPassword2;
-
-  onRefName = (c) => {
-    this.inputName = c;
-  };
-  onRefEmail = (c) => {
-    this.inputEmail = c;
-  };
-  onRefPassword = (c) => {
-    this.inputPassword = c;
-  };
-  onRefPassword2 = (c) => {
-    this.inputPassword2 = c;
   };
 
-  render() {
-    const {
-      nameError,
-      nameHelperText,
-      emailError,
-      emailHelperText,
-      passwordError,
-      passwordHelperText,
-      verifiedPasswordError,
-      verifiedPasswordHelperText,
-    } = this.state;
-
-    return (
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <div className={this.useStyles.paper}>
-          <Avatar className={this.useStyles.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            회원가입
-          </Typography>
-          <form
-            className={this.useStyles.form}
-            noValidate
-            onSubmit={this.handleSubmit}
+  return (
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <div className={classes.paper}>
+        <Avatar className={classes.avatar}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          회원가입
+        </Typography>
+        <form className={classes.form} noValidate onSubmit={handleSubmit}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                error={nameError}
+                helperText={nameHelperText}
+                autoComplete="fname"
+                name="name"
+                variant="outlined"
+                required
+                fullWidth
+                id="name"
+                label="Name"
+                autoFocus
+                onChange={handleNameChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                error={emailError}
+                helperText={emailHelperText}
+                variant="outlined"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                onChange={handleEmailChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                error={passwordError}
+                helperText={passwordHelperText}
+                variant="outlined"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                onChange={handlePWChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                error={verifiedPasswordError}
+                helperText={verifiedPasswordHelperText}
+                variant="outlined"
+                required
+                fullWidth
+                name="password2"
+                label="Verified Password"
+                type="password"
+                id="password2"
+                autoComplete="current-password"
+                onChange={handlePW2Change}
+              />
+            </Grid>
+          </Grid>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
           >
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  error={nameError}
-                  helperText={nameHelperText}
-                  autoComplete="fname"
-                  name="name"
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="name"
-                  label="Name"
-                  autoFocus
-                  onChange={this.handleNameChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  error={emailError}
-                  helperText={emailHelperText}
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  onChange={this.handleEmailChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  error={passwordError}
-                  helperText={passwordHelperText}
-                  variant="outlined"
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
-                  onChange={this.handlePWChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  error={verifiedPasswordError}
-                  helperText={verifiedPasswordHelperText}
-                  variant="outlined"
-                  required
-                  fullWidth
-                  name="password2"
-                  label="Verified Password"
-                  type="password"
-                  id="password2"
-                  autoComplete="current-password"
-                  onChange={this.handlePW2Change}
-                />
-              </Grid>
+            Sign Up
+          </Button>
+          <Grid container justify="flex-end">
+            <Grid item>
+              <Link href="/login" variant="body2">
+                이미 계정을 가지고 계신가요?
+              </Link>
             </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={this.useStyles.submit}
-            >
-              Sign Up
-            </Button>
-            <Grid container justify="flex-end">
-              <Grid item>
-                <Link href="/login" variant="body2">
-                  이미 계정을 가지고 계신가요?
-                </Link>
-              </Grid>
-            </Grid>
-          </form>
-        </div>
-        <Box mt={5}>
-          <Copyright />
-        </Box>
-      </Container>
-    );
-  }
+          </Grid>
+        </form>
+      </div>
+      <Box mt={5}>
+        <Copyright />
+      </Box>
+    </Container>
+  );
 }
