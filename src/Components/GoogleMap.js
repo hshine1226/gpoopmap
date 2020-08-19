@@ -16,6 +16,7 @@ import ToiletCard from "./ToiletCard";
 import Axios from "axios";
 import { Alert } from "@material-ui/lab";
 import Modal from "./Modal";
+import { connect } from "react-redux";
 
 const Container = styled.div`
   width: 100%;
@@ -44,7 +45,7 @@ const addStyle = {
   right: "4px",
 };
 
-export class GoogleMap extends Component {
+class GoogleMap extends Component {
   constructor(props) {
     super(props);
 
@@ -58,10 +59,9 @@ export class GoogleMap extends Component {
       clickAddToilet: false,
       nearToilets: [],
       isCurrentLoc: false,
-      login: false,
+
       modalOpen: false,
       modalTitle: "",
-      user: null,
     };
   }
 
@@ -107,9 +107,8 @@ export class GoogleMap extends Component {
       Axios.get("/api/toilets/nearby", {
         params: { lat: this.state.center.lat, lng: this.state.center.lng },
       }).then((response) => {
-        console.log(response);
         const { data: nearToilets } = response;
-        console.log(nearToilets);
+
         this.setState({
           nearToilets,
         });
@@ -136,22 +135,18 @@ export class GoogleMap extends Component {
   };
 
   handleAddToilet = (history) => (event) => {
-    if (this.state.user === null) {
+    if (!this.props.isLoggedIn) {
       alert("로그인을 해주세요");
-    }
-    if (this.state.currentLoc) {
-      console.log(history);
-      history.push("/add", this.state.currentLoc);
     } else {
-      this.setState({
-        modalOpen: true,
-        modalTitle: "현재 위치를 등록해주세요.",
-      });
+      if (this.state.currentLoc) {
+        history.push("/add", this.state.currentLoc);
+      } else {
+        alert("현재 위치 핀을 등록해주세요.");
+      }
     }
   };
 
   centerMoved = (mapProps, map) => {
-    // console.log("mapProps", mapProps);
     this.setState({
       showingInfoWindow: false,
     });
@@ -164,7 +159,7 @@ export class GoogleMap extends Component {
       params: { lng: lng, lat: lat },
     }).then((response) => {
       const { data: nearToilets } = response;
-      console.log(nearToilets);
+
       this.setState({
         nearToilets,
       });
@@ -192,8 +187,28 @@ export class GoogleMap extends Component {
     });
   };
 
+  onMapReady = (_, map) => {
+    const lat = map.center.lat();
+    const lng = map.center.lng();
+
+    this.setState({
+      center: { lat, lng },
+    });
+    Axios.get("/api/toilets/nearby", {
+      params: { lng: lng, lat: lat },
+    }).then((response) => {
+      const { data: nearToilets } = response;
+
+      this.setState({
+        nearToilets,
+      });
+    });
+  };
+
   render() {
+    console.log(this.props);
     const { history } = this.props;
+
     const {
       loading,
       center,
@@ -202,7 +217,6 @@ export class GoogleMap extends Component {
       isCurrentLoc,
       showingInfoWindow,
       modalOpen,
-      modalTitle,
     } = this.state;
 
     if (loading) {
@@ -218,6 +232,7 @@ export class GoogleMap extends Component {
           zoom={15}
           onClick={this.onMapClick}
           onDragend={this.centerMoved}
+          onReady={this.onMapReady}
         >
           {nearToilets
             ? nearToilets.map((toilet) => (
@@ -310,8 +325,15 @@ export class GoogleMap extends Component {
   }
 }
 
-export default GoogleApiWrapper({
-  apiKey: "AIzaSyDVsLljaNNAk_DW6CR8VYnh2o0PHfhRMR4",
-  language: "ko-KR",
-  LoadingContainer: Loader,
-})(GoogleMap);
+function mapStateToProps(state) {
+  const { isLoggedIn } = state;
+  return { isLoggedIn };
+}
+
+export default connect(mapStateToProps)(
+  GoogleApiWrapper({
+    apiKey: "AIzaSyDVsLljaNNAk_DW6CR8VYnh2o0PHfhRMR4",
+    language: "ko-KR",
+    LoadingContainer: Loader,
+  })(GoogleMap)
+);
