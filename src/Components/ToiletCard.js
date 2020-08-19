@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function RecipeReviewCard(props) {
+function RecipeReviewCard(props) {
   const {
     children: { name, memo, creator, imageUrl },
   } = props;
@@ -32,7 +32,11 @@ export default function RecipeReviewCard(props) {
     <Card className={classes.root}>
       <CardHeader
         avatar={
-          <Avatar aria-label="recipe" className={classes.avatar}>
+          <Avatar
+            aria-label="recipe"
+            className={classes.avatar}
+            src={creator?.avatarUrl}
+          >
             {/* 프로필 사진이 없다면 유저 네임의 첫 글자를 아바타 사진으로 함. */}
             {creator && creator.name ? creator.name.substring(0, 1) : "대"}
           </Avatar>
@@ -56,3 +60,5 @@ export default function RecipeReviewCard(props) {
     </Card>
   );
 }
+
+export default RecipeReviewCard;

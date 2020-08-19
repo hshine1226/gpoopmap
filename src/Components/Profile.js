@@ -50,7 +50,6 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
     width: theme.spacing(30),
     height: theme.spacing(30),
   },
@@ -60,10 +59,6 @@ const useStyles = makeStyles((theme) => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
-  },
-  large: {
-    width: theme.spacing(7),
-    height: theme.spacing(7),
   },
 }));
 
