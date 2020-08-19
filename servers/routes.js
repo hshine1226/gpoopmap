@@ -6,7 +6,8 @@ const API = "/api";
 const JOIN = "/join";
 const LOGIN = "/login";
 const LOGOUT = "/logout";
-const USER = "/users/user";
+const GET_USER = "/users/user";
+const USER = "/users/:id";
 const ME = "/me";
 const POST_TOILET = "/toilet";
 const NEAR_TOILETS = "/toilets/nearby";
@@ -23,7 +24,8 @@ const routes = {
   me: ME,
   postToilet: POST_TOILET,
   nearToilets: NEAR_TOILETS,
-  getUser: USER,
+  getUser: GET_USER,
+  user: USER,
 };
 
 export default routes;

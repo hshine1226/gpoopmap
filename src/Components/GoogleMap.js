@@ -206,7 +206,6 @@ class GoogleMap extends Component {
   };
 
   render() {
-    console.log(this.props);
     const { history } = this.props;
 
     const {

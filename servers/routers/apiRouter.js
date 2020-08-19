@@ -8,8 +8,9 @@ import {
   logout,
   getNearToilets,
   getUser,
+  updateUser,
 } from "../controllers/apiController";
-import { uploadImage } from "../ middlewares";
+import { uploadImage, uploadAvatar } from "../ middlewares";
 
 const apiRouter = express.Router();
 
@@ -20,5 +21,6 @@ apiRouter.get(routes.me, getMe);
 apiRouter.post(routes.postToilet, uploadImage, postToilet);
 apiRouter.get(routes.nearToilets, getNearToilets);
 apiRouter.get(routes.getUser, getUser);
+apiRouter.post(routes.user, uploadAvatar, updateUser);
 
 export default apiRouter;

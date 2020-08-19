@@ -11,6 +11,22 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { connect } from "react-redux";
+import styled from "styled-components";
+import Axios from "axios";
+import { actionCreator } from "../store";
+
+const ImageUpload = styled.input`
+  margin: 20px 0;
+  width: 100%;
+  height: 50px;
+  border: 1px solid black;
+  border-radius: 3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  text-align: center;
+`;
 
 function Copyright() {
   return (
@@ -35,6 +51,8 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
+    width: theme.spacing(30),
+    height: theme.spacing(30),
   },
   form: {
     width: "100%", // Fix IE 11 issue.
@@ -43,12 +61,41 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  large: {
+    width: theme.spacing(7),
+    height: theme.spacing(7),
+  },
 }));
 
-function Profile({ isLoggedIn, user }) {
+function Profile({ isLoggedIn, user, dispatch }) {
   const classes = useStyles();
   const [name, setName] = useState(user.name);
   const [email, setEmail] = useState(user.email);
+  const [image, setImage] = useState("");
+
+  const onNameChange = (event) => {
+    setName(event.target.value);
+  };
+
+  const handleImageChange = (event) => {
+    setImage(event.target.files[0]);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const formData = new FormData();
+    formData.append("avatar", image);
+    formData.append("name", name);
+    formData.append("email", email);
+
+    Axios.post(`/api/users/${user._id}`, formData).then((response) => {
+      const { data: user } = response;
+
+      if (user) {
+        dispatch(actionCreator.updateProfile(user));
+      }
+    });
+  };
 
   return (
     <>
@@ -56,13 +103,17 @@ function Profile({ isLoggedIn, user }) {
         <Container component="main" maxWidth="xs">
           <CssBaseline />
           <div className={classes.paper}>
-            <Avatar className={classes.avatar}>
+            <Avatar
+              alt={user.name}
+              src={user?.avatarUrl}
+              className={classes.avatar}
+            >
               <PersonIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
               Profile
             </Typography>
-            <form className={classes.form} noValidate>
+            <form className={classes.form} noValidate onSubmit={handleSubmit}>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <TextField
@@ -75,6 +126,7 @@ function Profile({ isLoggedIn, user }) {
                     label="Name"
                     autoFocus
                     value={name}
+                    onChange={onNameChange}
                   />
                 </Grid>
 
@@ -89,6 +141,15 @@ function Profile({ isLoggedIn, user }) {
                     autoComplete="email"
                     value={email}
                     disabled
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <ImageUpload
+                    type="file"
+                    name="imageFile"
+                    id="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
                   />
                 </Grid>
               </Grid>
@@ -117,4 +178,8 @@ function mapStateToProps(state) {
 
   return { isLoggedIn, user };
 }
-export default connect(mapStateToProps)(Profile);
+
+function mapDispatchToProps(dispatch, ownProps) {
+  return { dispatch };
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);

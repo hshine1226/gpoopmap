@@ -37,7 +37,6 @@ export const postLogin = (req, res) => {
 export const logout = (req, res) => {
   try {
     req.logout();
-    console.log("로그아웃...");
     res.send({ success: true });
   } catch {
     res.send({ success: false });
@@ -69,8 +68,6 @@ export const postToilet = async (req, res) => {
     body: { lat, lng, name, type, memo },
   } = req;
 
-  console.log(lat, lng, name, type, memo);
-
   try {
     // 로그인한 유저만 화장실 등록 가능
     if (req.user) {
@@ -88,7 +85,6 @@ export const postToilet = async (req, res) => {
       req.user.toilets.push(toilet.id);
       req.user.save();
 
-      console.log(req.user);
       toilet.save();
       res.status(200);
     }
@@ -101,7 +97,6 @@ export const postToilet = async (req, res) => {
 };
 
 export const getNearToilets = async (req, res) => {
-  console.log("req", req);
   const {
     query: { lat, lng },
   } = req;
@@ -118,8 +113,32 @@ export const getNearToilets = async (req, res) => {
         },
       },
     }).populate("creator");
-    console.log(toilet);
     res.send(toilet);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const updateUser = async (req, res) => {
+  const {
+    body: { name, email },
+    file,
+    params: { id },
+  } = req;
+
+  try {
+    const user = await User.findById(id);
+    user.name = name;
+    user.avatarUrl = file.location;
+    user.save();
+    res.send(user);
+
+    // const updatedUser = await User.findByIdAndUpdate(id, {
+    //   name,
+    //   email,
+    //   avatarUrl: file.location ? file.location : null,
+    // });
+    // res.send(updatedUser);
   } catch (error) {
     console.log(error);
   }
