@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -15,14 +15,14 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
 import { Link } from "react-router-dom";
 import HomeIcon from "@material-ui/icons/Home";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import Axios from "axios";
+import { connect } from "react-redux";
+import { actionCreator } from "../store";
 
 const drawerWidth = 240;
 
@@ -83,24 +83,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Header(props) {
+function Header(props) {
+  const { isLoggedIn, dispatch } = props;
+
   const classes = useStyles();
   const theme = useTheme();
 
-  const [login, setLogin] = useState(false);
   const [open, setOpen] = React.useState(false);
-
-  useEffect(() => {
-    Axios.get("/api/me")
-      .then((response) => {
-        if (response.data.user !== undefined) {
-          setLogin(true);
-        } else {
-          setLogin(false);
-        }
-      })
-      .catch((error) => console.log(error));
-  });
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -116,7 +105,7 @@ export default function Header(props) {
         data: { success },
       } = response;
       if (success) {
-        setLogin(false);
+        dispatch(actionCreator.logoutSuccess());
       }
     });
   };
@@ -176,7 +165,11 @@ export default function Header(props) {
             </ListItem>
           </Link>
           <Link to="/profile" onClick={handleDrawerClose}>
-            <ListItem button key={"프로필"}>
+            <ListItem
+              button
+              key={"프로필"}
+              className={isLoggedIn ? null : classes.hide}
+            >
               <ListItemIcon>
                 <HomeIcon />
               </ListItemIcon>
@@ -187,7 +180,7 @@ export default function Header(props) {
             <ListItem
               button
               key={"회원가입"}
-              className={login ? classes.hide : null}
+              className={isLoggedIn ? classes.hide : null}
             >
               <ListItemIcon>
                 <AssignmentIndIcon />
@@ -197,7 +190,7 @@ export default function Header(props) {
           </Link>
           <Link to="/login" onClick={handleDrawerClose}>
             <ListItem
-              className={login ? classes.hide : null}
+              className={isLoggedIn ? classes.hide : null}
               button
               key={"로그인"}
             >
@@ -208,7 +201,7 @@ export default function Header(props) {
             </ListItem>
           </Link>
           <ListItem
-            className={login ? null : classes.hide}
+            className={isLoggedIn ? null : classes.hide}
             button
             key={"로그아웃"}
             onClick={handleLogout}
@@ -224,3 +217,13 @@ export default function Header(props) {
     </div>
   );
 }
+
+function mapStateToProps(state) {
+  return state;
+}
+
+function mapDispatchToProps(dispatch) {
+  return { dispatch };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);
