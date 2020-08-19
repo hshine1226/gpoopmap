@@ -13,7 +13,8 @@ import Header from "./Header";
 import Add from "./Add";
 import Profile from "./Profile";
 
-export default () => {
+export default (props) => {
+  // console.log("ROuter ", props);
   return (
     <Router>
       <>

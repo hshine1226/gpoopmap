@@ -54,6 +54,7 @@ class Login extends React.Component {
       email: email,
       password: password,
     }).then((response) => {
+      // console.log(response.data.user);
       if (response.data.success === true) {
         this.props.dispatch(actionCreator.loginSuccess(response.data.user));
         this.props.history.push("/");
