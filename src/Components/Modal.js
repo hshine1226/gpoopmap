@@ -23,8 +23,6 @@ export default function TransitionsModal(props) {
 
   const { modalOpen } = props;
 
-  console.log(modalOpen);
-
   const [open, setOpen] = useState(false);
 
   useEffect(() => {

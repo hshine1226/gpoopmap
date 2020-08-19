@@ -50,7 +50,6 @@ export default function InputAdornments(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(lat, lng, name, type, memo, image);
     const formData = new FormData();
     formData.append("imageFile", image);
     formData.append("lat", lat);
