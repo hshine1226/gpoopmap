@@ -13,7 +13,6 @@ import Container from "@material-ui/core/Container";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import Axios from "axios";
-import { actionCreator } from "../store";
 
 const ImageUpload = styled.input`
   margin: 20px 0;
@@ -62,10 +61,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Profile({ isLoggedIn, user, dispatch }) {
+function Profile({ isLoggedIn, user }) {
   const classes = useStyles();
   const [name, setName] = useState(user.name);
-  const [email, setEmail] = useState(user.email);
+
   const [image, setImage] = useState("");
 
   const onNameChange = (event) => {
@@ -81,13 +80,13 @@ function Profile({ isLoggedIn, user, dispatch }) {
     const formData = new FormData();
     formData.append("avatar", image);
     formData.append("name", name);
-    formData.append("email", email);
+    formData.append("email", user.email);
 
     Axios.post(`/api/users/${user._id}`, formData).then((response) => {
       const { data: user } = response;
 
       if (user) {
-        dispatch(actionCreator.updateProfile(user));
+        // dispatch(actionCreator.updateProfile(user));
       }
     });
   };
@@ -134,7 +133,7 @@ function Profile({ isLoggedIn, user, dispatch }) {
                     label="Email Address"
                     name="email"
                     autoComplete="email"
-                    value={email}
+                    value={user.email}
                     disabled
                   />
                 </Grid>
@@ -169,12 +168,11 @@ function Profile({ isLoggedIn, user, dispatch }) {
 }
 
 function mapStateToProps(state) {
-  const { isLoggedIn, user } = state;
+  const {
+    userReducer: { isLoggedIn, user },
+  } = state;
 
   return { isLoggedIn, user };
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
-  return { dispatch };
-}
-export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+export default connect(mapStateToProps)(Profile);
