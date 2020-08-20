@@ -12,6 +12,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import axios from "axios";
 import Axios from "axios";
+import { connect } from "react-redux";
+import { openSnackBar } from "../store/modules/snackBar";
 
 function Copyright() {
   return (
@@ -46,9 +48,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Join(props) {
-  console.log(props);
-
+function Join({ history, openSnackBar }) {
   const classes = useStyles();
 
   const [name, setName] = useState("");
@@ -160,7 +160,8 @@ export default function Join(props) {
           } = response;
 
           if (success) {
-            props.history.push("/");
+            history.push("/");
+            openSnackBar("success", "회원가입이 성공적으로 완료되었습니다.");
           } else {
             if (error === "userExist") {
               setEmailError(true);
@@ -270,3 +271,11 @@ export default function Join(props) {
     </Container>
   );
 }
+
+function mapDispatchToProps(dispatch) {
+  return {
+    openSnackBar: (severity, message) =>
+      dispatch(openSnackBar(severity, message)),
+  };
+}
+export default connect(null, mapDispatchToProps)(Join);

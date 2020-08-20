@@ -14,23 +14,14 @@ import AddIcon from "@material-ui/icons/Add";
 import Tooltip from "@material-ui/core/Tooltip";
 import ToiletCard from "./ToiletCard";
 import Axios from "axios";
-import { Alert } from "@material-ui/lab";
-import Modal from "./Modal";
 import { connect } from "react-redux";
+import { openSnackBar } from "../store/modules/snackBar";
 
 const Container = styled.div`
   width: 100%;
   height: calc(100vh - 65px);
   position: relative;
 `;
-
-const AlertContainer = styled.div`
-  z-index: 3;
-  right: 75px;
-  bottom: 205px;
-  position: absolute;
-`;
-
 const iconStyle = {
   zIndex: 3,
   position: "absolute",
@@ -58,10 +49,6 @@ class GoogleMap extends Component {
       currentLoc: null,
       clickAddToilet: false,
       nearToilets: [],
-      isCurrentLoc: false,
-
-      modalOpen: false,
-      modalTitle: "",
     };
   }
 
@@ -95,7 +82,6 @@ class GoogleMap extends Component {
         this.setState({
           center: { lat, lng },
           currentLoc: { lat, lng },
-          isCurrentLoc: true,
           showingInfoWindow: false,
         });
       };
@@ -122,7 +108,6 @@ class GoogleMap extends Component {
     this.setState({
       activeMarker: marker,
       showingInfoWindow: true,
-      // currentLoc: marker.position,
     });
   };
 
@@ -136,17 +121,23 @@ class GoogleMap extends Component {
 
   handleAddToilet = (history) => (event) => {
     if (!this.props.isLoggedIn) {
-      alert("로그인을 해주세요");
+      this.props.openSnackBar(
+        "error",
+        "화장실을 등록하려면 로그인이 필요합니다."
+      );
     } else {
       if (this.state.currentLoc) {
         history.push("/add", this.state.currentLoc);
       } else {
-        alert("현재 위치 핀을 등록해주세요.");
+        this.props.openSnackBar(
+          "error",
+          "화장실을 등록하려면 핀등록이 필요합니다."
+        );
       }
     }
   };
 
-  centerMoved = (mapProps, map) => {
+  centerMoved = (_, map) => {
     this.setState({
       showingInfoWindow: false,
     });
@@ -166,7 +157,7 @@ class GoogleMap extends Component {
     });
   };
 
-  myLocMoved = (mapProps, map) => {
+  myLocMoved = (_, map) => {
     const lat = map.position.lat();
     const lng = map.position.lng();
 
@@ -175,7 +166,7 @@ class GoogleMap extends Component {
     });
   };
 
-  onMapClick = (mapProps, map, clickEvent) => {
+  onMapClick = () => {
     this.setState({
       showingInfoWindow: false,
     });
@@ -213,9 +204,8 @@ class GoogleMap extends Component {
       center,
       currentLoc,
       nearToilets,
-      isCurrentLoc,
+
       showingInfoWindow,
-      modalOpen,
     } = this.state;
 
     if (loading) {
@@ -273,9 +263,6 @@ class GoogleMap extends Component {
           <Circle
             radius={1000}
             center={center}
-            // onMouseover={() => console.log("mouseover")}
-            // onClick={() => console.log("click")}
-            // onMouseout={() => console.log("mouseout")}
             strokeColor="transparent"
             strokeOpacity={0}
             strokeWeight={5}
@@ -310,26 +297,29 @@ class GoogleMap extends Component {
             <AddIcon />
           </Fab>
         </Tooltip>
-        {!isCurrentLoc ? (
-          <AlertContainer>
-            <Alert severity="info">
-              화장실을 등록하려면 현재 위치가 필요해요.
-            </Alert>
-          </AlertContainer>
-        ) : null}
-
-        <Modal modalOpen={modalOpen} />
       </Container>
     );
   }
 }
 
 function mapStateToProps(state) {
-  const { isLoggedIn } = state;
+  const {
+    userReducer: { isLoggedIn },
+  } = state;
   return { isLoggedIn };
 }
 
-export default connect(mapStateToProps)(
+function mapDispatchToProps(dispatch) {
+  return {
+    openSnackBar: (severity, message) =>
+      dispatch(openSnackBar(severity, message)),
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(
   GoogleApiWrapper({
     apiKey: "AIzaSyDVsLljaNNAk_DW6CR8VYnh2o0PHfhRMR4",
     language: "ko-KR",

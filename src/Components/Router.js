@@ -12,6 +12,7 @@ import Login from "./Login";
 import Header from "./Header";
 import Add from "./Add";
 import Profile from "./Profile";
+import SnackBar from "./SnackBar";
 
 export default (props) => {
   // console.log("ROuter ", props);
@@ -19,6 +20,7 @@ export default (props) => {
     <Router>
       <>
         <Header />
+        <SnackBar />
         <Switch>
           <Route path="/" exact component={Home} />
           <Route path="/login" exact component={Login} />

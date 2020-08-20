@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { TextField, Button, MenuItem } from "@material-ui/core";
 import styled from "styled-components";
 import Axios from "axios";
+import { connect } from "react-redux";
+import { openSnackBar } from "../store/modules/snackBar";
 const toiletTypes = [
   {
     value: "공중화장실",
@@ -41,11 +43,12 @@ const ImageUpload = styled.input`
   text-align: center;
 `;
 
-export default function InputAdornments(props) {
+function InputAdornments(props) {
   const {
     location: {
       state: { lat: latt, lng: long },
     },
+    openSnackBar,
   } = props;
 
   const handleSubmit = (event) => {
@@ -60,6 +63,7 @@ export default function InputAdornments(props) {
     Axios.post("/api/toilet", formData).then((response) => {
       if (response.status === 200) {
         props.history.push("/");
+        openSnackBar("success", "화장실이 정상적으로 추가 되었습니다.");
       }
     });
   };
@@ -185,3 +189,11 @@ export default function InputAdornments(props) {
     </Container>
   );
 }
+
+function mapDispatchToProps(dispatch) {
+  return {
+    openSnackBar: (severity, message) =>
+      dispatch(openSnackBar(severity, message)),
+  };
+}
+export default connect(null, mapDispatchToProps)(InputAdornments);
