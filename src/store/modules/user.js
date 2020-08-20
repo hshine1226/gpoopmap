@@ -16,6 +16,7 @@ export const updateProfile = (result) => {
   return { type: UPDATE_PROFILE, result };
 };
 
+// reducer
 const defaultState = {
   isLoggedIn: false,
   user: {},
