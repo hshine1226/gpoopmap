@@ -22,7 +22,7 @@ import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import Axios from "axios";
 import { connect } from "react-redux";
-import { actionCreator } from "../store";
+import { openSnackBar } from "../store/modules/snackBar";
 
 const drawerWidth = 240;
 
@@ -83,9 +83,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Header(props) {
-  const { isLoggedIn, dispatch } = props;
-
+function Header({ isLoggedIn, openSnackBar }) {
   const classes = useStyles();
   const theme = useTheme();
 
@@ -105,7 +103,8 @@ function Header(props) {
         data: { success },
       } = response;
       if (success) {
-        dispatch(actionCreator.logoutSuccess());
+        openSnackBar("success", "로그아웃 성공");
+        setOpen(false);
       }
     });
   };
@@ -219,11 +218,17 @@ function Header(props) {
 }
 
 function mapStateToProps(state) {
-  return state;
+  const {
+    userReducer: { isLoggedIn },
+  } = state;
+
+  return { isLoggedIn };
 }
 
 function mapDispatchToProps(dispatch) {
-  return { dispatch };
+  return {
+    openSnackBar: (severity, message) =>
+      dispatch(openSnackBar(severity, message)),
+  };
 }
-
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

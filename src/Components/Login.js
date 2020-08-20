@@ -10,8 +10,9 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import Axios from "axios";
-import { actionCreator } from "../store";
 import { makeStyles } from "@material-ui/core";
+import { loginSuccess } from "../store/modules/user";
+import { openSnackBar } from "../store/modules/snackBar";
 
 function Copyright() {
   return (
@@ -46,8 +47,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Login(props) {
-  console.log(props);
+function Login({ loginSuccess, openSnackBar, history }) {
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -69,8 +69,12 @@ function Login(props) {
     }).then((response) => {
       // console.log(response.data.user);
       if (response.data.success === true) {
-        props.dispatch(actionCreator.loginSuccess(response.data.user));
-        props.history.push("/");
+        const {
+          data: { user },
+        } = response;
+        loginSuccess(user);
+        openSnackBar("success", "로그인에 성공했습니다.");
+        history.push("/");
       }
     });
   };
@@ -136,13 +140,20 @@ function Login(props) {
 }
 
 function mapStateToProps(state) {
-  const { state: user } = state;
+  const {
+    userReducer: { user },
+  } = state;
 
   return { user };
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  return { dispatch };
+  return {
+    loginSuccess: (user) => dispatch(loginSuccess(user)),
+    openSnackBar: (severity, message) =>
+      dispatch(openSnackBar(severity, message)),
+  };
+  // return { dispatch };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
