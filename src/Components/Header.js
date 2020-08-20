@@ -23,6 +23,7 @@ import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import Axios from "axios";
 import { connect } from "react-redux";
 import { openSnackBar } from "../store/modules/snackBar";
+import { logoutSuccess } from "../store/modules/user";
 
 const drawerWidth = 240;
 
@@ -83,7 +84,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Header({ isLoggedIn, openSnackBar }) {
+function Header({ isLoggedIn, logoutSuccess, openSnackBar }) {
   const classes = useStyles();
   const theme = useTheme();
 
@@ -103,8 +104,9 @@ function Header({ isLoggedIn, openSnackBar }) {
         data: { success },
       } = response;
       if (success) {
-        openSnackBar("success", "로그아웃 성공");
         setOpen(false);
+        logoutSuccess();
+        openSnackBar("success", "로그아웃 성공");
       }
     });
   };
@@ -229,6 +231,7 @@ function mapDispatchToProps(dispatch) {
   return {
     openSnackBar: (severity, message) =>
       dispatch(openSnackBar(severity, message)),
+    logoutSuccess: () => dispatch(logoutSuccess()),
   };
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Header);
