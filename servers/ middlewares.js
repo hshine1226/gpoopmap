@@ -1,7 +1,6 @@
 import multer from "multer";
 import multerS3 from "multer-s3";
 import aws from "aws-sdk";
-import path from "path";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -12,7 +11,7 @@ const s3 = new aws.S3({
   region: "ap-northeast-2",
 });
 
-const upload = multer({ dest: "uploads/" });
+// const upload = multer({ dest: "uploads/" });
 
 const multerImage = multer({
   storage: multerS3({

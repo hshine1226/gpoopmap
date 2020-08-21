@@ -72,9 +72,9 @@ class GoogleMap extends Component {
     }
   }
 
-  handleCurrentPosition = async () => {
+  handleCurrentPosition = () => {
     if ("geolocation" in navigator) {
-      const success = async (pos) => {
+      const success = (pos) => {
         const {
           coords: { latitude: lat, longitude: lng },
         } = pos;
