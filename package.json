@@ -48,10 +48,13 @@
     "styled-reset": "^4.2.1"
   },
   "scripts": {
-    "start": "npm-run-all --parallel start:**",
-    "start:client": "react-scripts start",
-    "start:server": "nodemon --exec babel-node ./servers/init.js",
+    "start": "PRODUCTION=true node build/servers/init.js react-scripts start",
+    "prestart": "npm run build",
+    "dev:client": "react-scripts start",
+    "dev:server": "nodemon --exec babel-node ./servers/init.js",
     "build": "react-scripts build",
+    "build:client": "react-scripts build",
+    "build:server": "babel servers --out-dir build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
