@@ -18,7 +18,7 @@
     "@testing-library/user-event": "^7.2.1",
     "@typescript-eslint/eslint-plugin": "^2.10.0",
     "@typescript-eslint/parser": "^2.10.0",
-    "aws-sdk": "^2.732.0",
+    "aws-sdk": "^2.738.0",
     "axios": "^0.18.0",
     "babel-eslint": "10.1.0",
     "babel-jest": "^24.9.0",
@@ -47,9 +47,9 @@
     "express-session": "^1.17.1",
     "file-loader": "4.3.0",
     "fs-extra": "^8.1.0",
-    "google-map-react": "^2.0.4",
+    "google-map-react": "^2.0.8",
     "google-maps-react": "^2.0.6",
-    "helmet": "^4.0.0",
+    "helmet": "^4.1.0",
     "html-webpack-plugin": "4.0.0-beta.11",
     "http-proxy-middleware": "^1.0.5",
     "identity-obj-proxy": "3.0.0",
@@ -58,7 +58,7 @@
     "jest-resolve": "24.9.0",
     "jest-watch-typeahead": "0.4.2",
     "mini-css-extract-plugin": "0.9.0",
-    "mongoose": "^5.9.27",
+    "mongoose": "^5.10.0",
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
     "multer-s3": "^2.9.0",
@@ -92,7 +92,7 @@
     "semver": "6.3.0",
     "style-loader": "0.23.1",
     "styled-components": "^5.1.1",
-    "styled-reset": "^4.2.1",
+    "styled-reset": "^4.2.2",
     "terser-webpack-plugin": "2.3.5",
     "ts-pnp": "1.1.6",
     "url-loader": "2.3.0",
@@ -105,10 +105,10 @@
     "start": "PRODUCTION=true node build/servers/init.js",
     "prestart": "npm run build",
     "dev:client": "node scripts/start.js",
-    "dev:server": "NODE_ENV=development nodemon --exec babel-node ./servers/init.js",
+    "dev:server": "NODE_ENV=development nodemon --exec babel-node ./server/init.js",
     "build": "npm run build:client && npm run build:server",
     "build:client": "node scripts/build.js",
-    "build:server": "NODE_ENV=production BABEL_ENV=production babel servers --out-dir build/servers",
+    "build:server": "BABEL_ENV=production NODE_ENV=production babel server --out-dir build/server",
     "test": "node scripts/test.js"
   },
   "eslintConfig": {
@@ -182,8 +182,16 @@
   },
   "babel": {
     "presets": [
-      "@babel/preset-env",
-      "react-app"
+      [
+        "@babel/preset-env",
+        {
+          "useBuiltIns": "usage",
+          "corejs": 3
+        }
+      ],
+      [
+        "react-app"
+      ]
     ]
   }
 }
