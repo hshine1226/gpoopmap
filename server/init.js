@@ -1,10 +1,6 @@
-import "core-js/stable";
-import "regenerator-runtime/runtime";
-import "@babel/polyfill";
-
-import app from "./app";
 import dotenv from "dotenv";
 import "./db";
+import app from "./app";
 
 dotenv.config();
 
