@@ -6,8 +6,8 @@ import {
   Switch,
 } from "react-router-dom";
 
-import Home from "Routes/Home";
-import Join from "Routes/Join";
+import Home from "../Routes/Home";
+import Join from "../Routes/Join";
 import Login from "./Login";
 import Header from "./Header";
 import Add from "./Add";
