@@ -13,6 +13,8 @@ import Container from "@material-ui/core/Container";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import Axios from "axios";
+import { updateProfile } from "../store/modules/user";
+import { openSnackBar } from "../store/modules/snackBar";
 
 const ImageUpload = styled.input`
   margin: 20px 0;
@@ -61,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Profile({ isLoggedIn, user }) {
+function Profile({ isLoggedIn, user, updateProfile, openSnackBar }) {
   const classes = useStyles();
   const [name, setName] = useState(user.name);
 
@@ -86,6 +88,8 @@ function Profile({ isLoggedIn, user }) {
       const { data: user } = response;
 
       if (user) {
+        updateProfile(user);
+        openSnackBar("success", "프로필이 정상적으로 업데이트 되었습니다.");
         // dispatch(actionCreator.updateProfile(user));
       }
     });
@@ -175,4 +179,12 @@ function mapStateToProps(state) {
   return { isLoggedIn, user };
 }
 
-export default connect(mapStateToProps)(Profile);
+function mapDispatchToProps(dispatch) {
+  return {
+    updateProfile: (result) => dispatch(updateProfile(result)),
+    openSnackBar: (severity, message) =>
+      dispatch(openSnackBar(severity, message)),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);
