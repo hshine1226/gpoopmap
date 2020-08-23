@@ -204,7 +204,6 @@ class GoogleMap extends Component {
       center,
       currentLoc,
       nearToilets,
-
       showingInfoWindow,
     } = this.state;
 
@@ -223,7 +222,7 @@ class GoogleMap extends Component {
           onDragend={this.centerMoved}
           onReady={this.onMapReady}
         >
-          {nearToilets
+          {nearToilets && Array.isArray(nearToilets)
             ? nearToilets.map((toilet) => (
                 <Marker
                   key={toilet._id}
