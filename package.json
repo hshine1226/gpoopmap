@@ -102,13 +102,12 @@
     "workbox-webpack-plugin": "4.3.1"
   },
   "scripts": {
-    "dev": "node scripts/start.js",
+    "start": "node scripts/start.js",
     "build": "node scripts/build.js"
   },
   "eslintConfig": {
     "extends": "react-app"
   },
-  "homepage": "https://gpoopmap.netlify.app/",
   "browserslist": {
     "production": [
       ">0.2%",
@@ -177,13 +176,6 @@
   },
   "babel": {
     "presets": [
-      [
-        "@babel/preset-env",
-        {
-          "useBuiltIns": "usage",
-          "corejs": 3
-        }
-      ],
       [
         "react-app"
       ]
