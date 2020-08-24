@@ -133,7 +133,7 @@ function Join({ history, openSnackBar }) {
 
     setPassword2(value);
 
-    if (value === password) {
+    if (password2 === password) {
       setVerifiedPasswordError(false);
       setVerifiedPasswordHelperText("");
     } else {
