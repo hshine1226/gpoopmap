@@ -9,10 +9,10 @@ import Box from "@material-ui/core/Box";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
-import Axios from "axios";
 import { makeStyles } from "@material-ui/core";
 import { loginSuccess } from "../store/modules/user";
 import { openSnackBar } from "../store/modules/snackBar";
+import { userApi } from "../api";
 
 function Copyright() {
   return (
@@ -63,20 +63,21 @@ function Login({ loginSuccess, openSnackBar, history }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    await Axios.post("/api/login", {
-      email: email,
-      password: password,
-    }).then((response) => {
-      // console.log(response.data.user);
-      if (response.data.success === true) {
-        const {
-          data: { user },
-        } = response;
+    try {
+      const {
+        data: { user },
+      } = await userApi.login(email, password);
+
+      if (user) {
         loginSuccess(user);
         openSnackBar("success", "로그인에 성공했습니다.");
         history.push("/");
+      } else {
+        openSnackBar("error", "로그인에 실패했습니다.");
       }
-    });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

@@ -12,9 +12,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import Axios from "axios";
 import { updateProfile } from "../store/modules/user";
 import { openSnackBar } from "../store/modules/snackBar";
+import { userApi } from "../api";
 
 const ImageUpload = styled.input`
   margin: 20px 0;
@@ -77,22 +77,24 @@ function Profile({ isLoggedIn, user, updateProfile, openSnackBar }) {
     setImage(event.target.files[0]);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData();
     formData.append("avatar", image);
     formData.append("name", name);
-    formData.append("email", user.email);
 
-    Axios.post(`/api/users/${user._id}`, formData).then((response) => {
-      const { data: user } = response;
-
-      if (user) {
-        updateProfile(user);
+    try {
+      const { data: updatedUser } = await userApi.updateProfile(
+        user._id,
+        formData
+      );
+      if (updatedUser) {
+        updateProfile(updatedUser);
         openSnackBar("success", "프로필이 정상적으로 업데이트 되었습니다.");
-        // dispatch(actionCreator.updateProfile(user));
       }
-    });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

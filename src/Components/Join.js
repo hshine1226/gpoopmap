@@ -10,10 +10,9 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import axios from "axios";
-import Axios from "axios";
 import { connect } from "react-redux";
 import { openSnackBar } from "../store/modules/snackBar";
+import { userApi } from "../api";
 
 function Copyright() {
   return (
@@ -81,7 +80,7 @@ function Join({ history, openSnackBar }) {
     }
   };
 
-  const handleEmailChange = (event) => {
+  const handleEmailChange = async (event) => {
     const {
       target: { value },
     } = event;
@@ -91,21 +90,21 @@ function Join({ history, openSnackBar }) {
     if (value.match(emailRegExp)) {
       setEmailError(false);
       setEmailHelperText("");
-
-      Axios.get("api/users/user", {
-        params: { email: value },
-      }).then((response) => {
+      try {
         const {
-          data: { message },
-        } = response;
-        if (message === "User Exist") {
+          data: { user },
+        } = await userApi.getUserByEmail(value);
+
+        if (user) {
           setEmailError(true);
           setEmailHelperText("해당 이메일이 이미 존재합니다.");
         } else {
           setEmailError(false);
           setEmailHelperText("");
         }
-      });
+      } catch (error) {
+        console.log(error);
+      }
     } else {
       setEmailError(true);
       setEmailHelperText("유효한 이메일 주소를 입력해주세요.");
@@ -147,29 +146,24 @@ function Join({ history, openSnackBar }) {
     event.preventDefault();
 
     if (!nameError && !emailError && !passwordError && !verifiedPasswordError) {
-      axios
-        .post("/api/join", {
-          name,
-          email,
-          password,
-          password2,
-        })
-        .then((response) => {
-          const {
-            data: { success, error },
-          } = response;
+      try {
+        const response = await userApi.join(name, email, password);
+        const {
+          data: { success, error },
+        } = response;
 
-          if (success) {
-            history.push("/");
-            openSnackBar("success", "회원가입이 성공적으로 완료되었습니다.");
-          } else {
-            if (error === "userExist") {
-              setEmailError(true);
-              setEmailHelperText("해당 이메일이 존재합니다.");
-            }
+        if (success) {
+          history.push("/");
+          openSnackBar("success", "회원가입이 성공적으로 완료되었습니다.");
+        } else {
+          if (error === "userExist") {
+            setEmailError(true);
+            setEmailHelperText("해당 이메일이 존재합니다.");
           }
-        })
-        .catch((error) => console.log(error));
+        }
+      } catch (error) {
+        console.log(error);
+      }
     } else {
       console.log("에러가 있어요");
     }

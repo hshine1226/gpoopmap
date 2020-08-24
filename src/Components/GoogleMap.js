@@ -13,9 +13,9 @@ import NavigationIcon from "@material-ui/icons/Navigation";
 import AddIcon from "@material-ui/icons/Add";
 import Tooltip from "@material-ui/core/Tooltip";
 import ToiletCard from "./ToiletCard";
-import Axios from "axios";
 import { connect } from "react-redux";
 import { openSnackBar } from "../store/modules/snackBar";
+import { toiletApi } from "../api";
 
 const Container = styled.div`
   width: 100%;
@@ -72,7 +72,7 @@ class GoogleMap extends Component {
     }
   }
 
-  handleCurrentPosition = () => {
+  handleCurrentPosition = async () => {
     if ("geolocation" in navigator) {
       const success = (pos) => {
         const {
@@ -90,17 +90,16 @@ class GoogleMap extends Component {
         console.log(error)
       );
 
-      Axios.get("/api/toilets/nearby", {
-        params: { lat: this.state.center.lat, lng: this.state.center.lng },
-      }).then((response) => {
-        const { data: nearToilets } = response;
+      const {
+        center: { lat, lng },
+      } = this.state;
 
-        this.setState({
-          nearToilets,
-        });
-      });
-    } else {
-      console.log("Not Available");
+      try {
+        const { data: nearToilets } = await toiletApi.nearToilets(lat, lng);
+        this.setState({ nearToilets });
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -137,7 +136,7 @@ class GoogleMap extends Component {
     }
   };
 
-  centerMoved = (_, map) => {
+  centerMoved = async (_, map) => {
     this.setState({
       showingInfoWindow: false,
     });
@@ -146,15 +145,13 @@ class GoogleMap extends Component {
     this.setState({
       center: { lat, lng },
     });
-    Axios.get("/api/toilets/nearby", {
-      params: { lng: lng, lat: lat },
-    }).then((response) => {
-      const { data: nearToilets } = response;
 
-      this.setState({
-        nearToilets,
-      });
-    });
+    try {
+      const { data: nearToilets } = await toiletApi.nearToilets(lat, lng);
+      this.setState({ nearToilets });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   myLocMoved = (_, map) => {
@@ -178,22 +175,21 @@ class GoogleMap extends Component {
     });
   };
 
-  onMapReady = (_, map) => {
+  onMapReady = async (_, map) => {
     const lat = map.center.lat();
     const lng = map.center.lng();
 
     this.setState({
       center: { lat, lng },
     });
-    Axios.get("/api/toilets/nearby", {
-      params: { lng: lng, lat: lat },
-    }).then((response) => {
-      const { data: nearToilets } = response;
 
-      this.setState({
-        nearToilets,
-      });
-    });
+    try {
+      const { data: nearToilets } = await toiletApi.nearToilets(lat, lng);
+
+      this.setState({ nearToilets });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   render() {

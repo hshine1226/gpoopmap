@@ -15,7 +15,6 @@ import Profile from "./Profile";
 import SnackBar from "./SnackBar";
 
 export default (props) => {
-  // console.log("ROuter ", props);
   return (
     <Router>
       <>

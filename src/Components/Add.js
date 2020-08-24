@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { TextField, Button, MenuItem } from "@material-ui/core";
 import styled from "styled-components";
-import Axios from "axios";
 import { connect } from "react-redux";
 import { openSnackBar } from "../store/modules/snackBar";
+import { toiletApi } from "../api";
 const toiletTypes = [
   {
     value: "공중화장실",
@@ -51,7 +51,7 @@ function InputAdornments(props) {
     openSnackBar,
   } = props;
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData();
     formData.append("imageFile", image);
@@ -60,12 +60,19 @@ function InputAdornments(props) {
     formData.append("name", name);
     formData.append("type", type);
     formData.append("memo", memo);
-    Axios.post("/api/toilet", formData).then((response) => {
+
+    try {
+      const response = await toiletApi.uploadToilet(formData);
+
       if (response.status === 200) {
         props.history.push("/");
         openSnackBar("success", "화장실이 정상적으로 추가 되었습니다.");
+      } else {
+        openSnackBar("error", "화장실 추가가 실패했습니다.");
       }
-    });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleLatChange = (event) => {
@@ -98,10 +105,6 @@ function InputAdornments(props) {
   const [type, setType] = useState("공중화장실");
   const [memo, setMemo] = useState(null);
   const [image, setImage] = useState("");
-
-  useEffect(() => {
-    console.log(lat, lng, name, type, memo, image);
-  });
 
   return (
     <Container>

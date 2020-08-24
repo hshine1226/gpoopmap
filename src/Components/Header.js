@@ -20,10 +20,10 @@ import HomeIcon from "@material-ui/icons/Home";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
-import Axios from "axios";
 import { connect } from "react-redux";
 import { openSnackBar } from "../store/modules/snackBar";
 import { logoutSuccess } from "../store/modules/user";
+import { userApi } from "../api";
 
 const drawerWidth = 240;
 
@@ -98,17 +98,22 @@ function Header({ isLoggedIn, logoutSuccess, openSnackBar }) {
     setOpen(false);
   };
 
-  const handleLogout = () => {
-    Axios.get("/api/logout").then((response) => {
+  const handleLogout = async () => {
+    try {
       const {
         data: { success },
-      } = response;
+      } = await userApi.logout();
+
       if (success) {
         setOpen(false);
         logoutSuccess();
         openSnackBar("success", "로그아웃 성공");
+      } else {
+        openSnackBar("error", "로그아웃 실패");
       }
-    });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
