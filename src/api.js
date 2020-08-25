@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const baseURL = "https://gpoopmap-server.herokuapp.com/api";
-// http://localhost:4000/api
+// const localURL = "http://localhost:4000/api";
 const api = axios.create({
   baseURL,
   withCredentials: true,
