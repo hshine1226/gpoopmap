@@ -30,15 +30,13 @@ function CustomizedSnackbars({ open, severity, message, closeSnackBar }) {
 
   return (
     <div className={classes.root}>
-      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity={severity}>
-          {message}
-        </Alert>
-      </Snackbar>
-      {/* <Alert severity="error">{message}</Alert>
-      <Alert severity="warning">{message}</Alert>
-      <Alert severity="info">{message}</Alert>
-      <Alert severity="success">{message}</Alert> */}
+      {open ? (
+        <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+          <Alert onClose={handleClose} severity={severity}>
+            {message}
+          </Alert>
+        </Snackbar>
+      ) : null}
     </div>
   );
 }
