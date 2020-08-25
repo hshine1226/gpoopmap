@@ -104,7 +104,6 @@
     "nodemon": "^2.0.4",
     "webpack-cli": "^3.3.12"
   },
-  "proxy": "https://gpoopmap-server.herokuapp.com/",
   "jest": {
     "roots": [
       "<rootDir>/src"
