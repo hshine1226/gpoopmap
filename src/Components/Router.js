@@ -8,10 +8,10 @@ import {
 
 import Home from "../Routes/Home";
 import Join from "../Routes/Join";
-import Login from "./Login";
+import Login from "../Routes/Login";
 import Header from "./Header";
 import Add from "./Add";
-import Profile from "./Profile";
+import Profile from "../Routes/Profile";
 import SnackBar from "./SnackBar";
 
 export default (props) => {
