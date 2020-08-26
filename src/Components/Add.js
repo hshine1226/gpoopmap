@@ -49,6 +49,8 @@ function InputAdornments(props) {
       state: { lat: latt, lng: long },
     },
     openSnackBar,
+    isLoggedIn,
+    user,
   } = props;
 
   const handleSubmit = async (event) => {
@@ -60,15 +62,17 @@ function InputAdornments(props) {
     formData.append("name", name);
     formData.append("type", type);
     formData.append("memo", memo);
+    formData.append("userId", user._id);
 
     try {
-      const response = await toiletApi.uploadToilet(formData);
-
-      if (response.status === 200) {
-        props.history.push("/");
-        openSnackBar("success", "화장실이 정상적으로 추가 되었습니다.");
-      } else {
-        openSnackBar("error", "화장실 추가가 실패했습니다.");
+      if (isLoggedIn) {
+        const response = await toiletApi.uploadToilet(formData);
+        if (response.status === 200) {
+          props.history.push("/");
+          openSnackBar("success", "화장실이 정상적으로 추가 되었습니다.");
+        } else {
+          openSnackBar("error", "화장실 추가가 실패했습니다.");
+        }
       }
     } catch (error) {
       console.log(error);
@@ -199,4 +203,11 @@ function mapDispatchToProps(dispatch) {
       dispatch(openSnackBar(severity, message)),
   };
 }
-export default connect(null, mapDispatchToProps)(InputAdornments);
+
+function mapStateToProps(state) {
+  const {
+    userReducer: { isLoggedIn, user },
+  } = state;
+  return { isLoggedIn, user };
+}
+export default connect(mapStateToProps, mapDispatchToProps)(InputAdornments);
