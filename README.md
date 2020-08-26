@@ -28,6 +28,8 @@ _"너무 급해 돈을 내도 좋으니 화장실만 찾자..."_ 라는 생각�
 
 ### Back-end
 
+대똥여지도-Back: https://github.com/hshine1226/gpoopmap-server
+
 - NodeJS
 
 - PassportJS
@@ -80,6 +82,7 @@ _"너무 급해 돈을 내도 좋으니 화장실만 찾자..."_ 라는 생각�
 ### 내 주변 1km 화장실 찾기
 
 - **현재 위치 찾기 버튼**을 클릭하거나 **지도를 움직이면** 현재 지도를 중심으로 주변 1km의 화장실 위치들을 받아올 수 있습니다.
+- Geojson 형태로 MongoDB에 저장되어 있는 데이터를 MongoDB의 \$near operator를 통해서 위치 정보들을 받아왔습니다.
 
 ![near-toilets](https://user-images.githubusercontent.com/31975706/91277110-59398b00-e7bd-11ea-8aba-b2272efa9490.gif)
 
