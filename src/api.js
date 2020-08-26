@@ -19,4 +19,5 @@ export const toiletApi = {
   uploadToilet: (formData) => api.post("/toilet", formData),
   nearToilets: (lat, lng) =>
     api.get("/toilets/nearby", { params: { lat, lng } }),
+  getToilet: (id) => api.get(`/toilet/${id}`),
 };
