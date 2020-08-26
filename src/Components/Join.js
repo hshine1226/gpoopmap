@@ -53,7 +53,6 @@ function Join({ history, openSnackBar }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [password2, setPassword2] = useState("");
   const [nameError, setNameError] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
@@ -130,8 +129,6 @@ function Join({ history, openSnackBar }) {
     const {
       target: { value },
     } = event;
-
-    setPassword2(value);
 
     if (value === password) {
       setVerifiedPasswordError(false);
