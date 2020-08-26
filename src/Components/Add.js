@@ -50,7 +50,6 @@ function InputAdornments(props) {
     },
     openSnackBar,
     isLoggedIn,
-    user,
   } = props;
 
   const handleSubmit = async (event) => {
@@ -62,7 +61,6 @@ function InputAdornments(props) {
     formData.append("name", name);
     formData.append("type", type);
     formData.append("memo", memo);
-    formData.append("userId", user._id);
 
     try {
       if (isLoggedIn) {
