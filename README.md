@@ -28,7 +28,7 @@ _"너무 급해 돈을 내도 좋으니 화장실만 찾자..."_ 라는 생각�
 
 ### Back-end
 
-[대똥여지도-Back ▶️](https://github.com/hshine1226/gpoopmap-server): https://github.com/hshine1226/gpoopmap-server
+[대똥여지도-Back ➡️](https://github.com/hshine1226/gpoopmap-server): https://github.com/hshine1226/gpoopmap-server
 
 - NodeJS
 
@@ -60,7 +60,7 @@ _"너무 급해 돈을 내도 좋으니 화장실만 찾자..."_ 라는 생각�
 
 ### 회원가입 & 로그인
 
-- 유저 관련 기능은 passportJS를 통해서 구현했습니다.
+- 유저 관련 기능은 **passportJS**를 통해서 구현했습니다.
 
 ![join](https://user-images.githubusercontent.com/31975706/91276457-8a658b80-e7bc-11ea-9f62-5472d8c9ab0f.gif)
 
@@ -68,21 +68,21 @@ _"너무 급해 돈을 내도 좋으니 화장실만 찾자..."_ 라는 생각�
 
 ### 프로필 & 프로필 수정
 
-- 서버의 안정성과 트래픽을 조절하기 위해서 프로필 이미지 업로드는 multer를 통해서 AWS S3에 이미지를 업로드 하였습니다.
+- 서버의 안정성과 트래픽을 조절하기 위해서 프로필 이미지 업로드는 **multer**를 통해서 **AWS S3**에 이미지를 업로드 하였습니다.
 
 ![edit-profile](https://user-images.githubusercontent.com/31975706/91276494-96e9e400-e7bc-11ea-92f4-587bda8466c2.gif)
 
 ### 현재 위치 찾기
 
-- Geolocation API를 통해서 사용자의 현재 위치를 받아올 수 있습니다.
-- 받아온 위치를 중심으로 주변 1km 내에 있는 화장실들을 지도에 표시합니다.
+- **Geolocation API**를 통해서 사용자의 현재 위치를 받아올 수 있습니다.
+- 받아온 위치를 중심으로 **반경 1km 내**에 있는 화장실들을 지도에 표시합니다.
 
 ![current-location](https://user-images.githubusercontent.com/31975706/91276502-994c3e00-e7bc-11ea-8e55-45f72b54bb6c.gif)
 
 ### 내 주변 1km 화장실 찾기
 
-- **현재 위치 찾기 버튼**을 클릭하거나 **지도를 움직이면** 현재 지도를 중심으로 주변 1km의 화장실 위치들을 받아올 수 있습니다.
-- Geojson 형태로 MongoDB에 저장되어 있는 데이터를 MongoDB의 \$near operator를 통해서 위치 정보들을 받아왔습니다.
+- **현재 위치 찾기 버튼**을 클릭하거나 **지도를 움직이면** 현재 지도를 중심으로 반경 1km의 화장실 위치들을 받아올 수 있습니다.
+- Geojson 형태로 MongoDB에 저장되어 있는 데이터를 **MongoDB의 \$near operator**를 통해서 위치 정보들을 받아왔습니다.
 
 ![near-toilets](https://user-images.githubusercontent.com/31975706/91277110-59398b00-e7bd-11ea-8aba-b2272efa9490.gif)
 
