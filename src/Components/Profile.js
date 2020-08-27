@@ -84,16 +84,15 @@ function Profile({ isLoggedIn, user, updateProfile, openSnackBar }) {
     formData.append("name", name);
 
     try {
-      const { data: updatedUser } = await userApi.updateProfile(
-        user._id,
-        formData
-      );
+      const {
+        data: { user: updatedUser },
+      } = await userApi.updateProfile(user._id, formData);
       if (updatedUser) {
         updateProfile(updatedUser);
         openSnackBar("success", "프로필이 정상적으로 업데이트 되었습니다.");
       }
     } catch (error) {
-      console.log(error);
+      openSnackBar("error", "프로필 업데이트에 실패했습니다.");
     }
   };
 

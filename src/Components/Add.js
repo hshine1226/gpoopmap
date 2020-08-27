@@ -68,12 +68,10 @@ function InputAdornments(props) {
         if (response.status === 200) {
           props.history.push("/");
           openSnackBar("success", "화장실이 정상적으로 추가 되었습니다.");
-        } else {
-          openSnackBar("error", "화장실 추가가 실패했습니다.");
         }
       }
     } catch (error) {
-      console.log(error);
+      openSnackBar("error", "화장실 추가에 실패했습니다.");
     }
   };
 

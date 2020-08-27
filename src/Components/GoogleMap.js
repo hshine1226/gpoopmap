@@ -95,7 +95,9 @@ class GoogleMap extends Component {
       } = this.state;
 
       try {
-        const { data: nearToilets } = await toiletApi.nearToilets(lat, lng);
+        const {
+          data: { toilets: nearToilets },
+        } = await toiletApi.nearToilets(lat, lng, 1000);
         this.setState({ nearToilets });
       } catch (error) {
         console.log(error);
@@ -147,7 +149,9 @@ class GoogleMap extends Component {
     });
 
     try {
-      const { data: nearToilets } = await toiletApi.nearToilets(lat, lng);
+      const {
+        data: { toilets: nearToilets },
+      } = await toiletApi.nearToilets(lat, lng, 1000);
       this.setState({ nearToilets });
     } catch (error) {
       console.log(error);
@@ -184,7 +188,9 @@ class GoogleMap extends Component {
     });
 
     try {
-      const { data: nearToilets } = await toiletApi.nearToilets(lat, lng);
+      const {
+        data: { toilets: nearToilets },
+      } = await toiletApi.nearToilets(lat, lng, 1000);
 
       this.setState({ nearToilets });
     } catch (error) {

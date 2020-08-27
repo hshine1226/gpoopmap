@@ -108,11 +108,9 @@ function Header({ isLoggedIn, logoutSuccess, openSnackBar }) {
         setOpen(false);
         logoutSuccess();
         openSnackBar("success", "로그아웃 성공");
-      } else {
-        openSnackBar("error", "로그아웃 실패");
       }
     } catch (error) {
-      console.log(error);
+      openSnackBar("error", "로그아웃 실패.");
     }
   };
 

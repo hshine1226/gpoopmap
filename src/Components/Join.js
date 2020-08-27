@@ -53,6 +53,7 @@ function Join({ history, openSnackBar }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
   const [nameError, setNameError] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
@@ -97,12 +98,10 @@ function Join({ history, openSnackBar }) {
         if (user) {
           setEmailError(true);
           setEmailHelperText("해당 이메일이 이미 존재합니다.");
-        } else {
-          setEmailError(false);
-          setEmailHelperText("");
         }
       } catch (error) {
-        console.log(error);
+        setEmailError(false);
+        setEmailHelperText("");
       }
     } else {
       setEmailError(true);
@@ -130,6 +129,8 @@ function Join({ history, openSnackBar }) {
       target: { value },
     } = event;
 
+    setPasswordConfirm(value);
+
     if (value === password) {
       setVerifiedPasswordError(false);
       setVerifiedPasswordHelperText("");
@@ -141,28 +142,35 @@ function Join({ history, openSnackBar }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    if (!nameError && !emailError && !passwordError && !verifiedPasswordError) {
+    // !emailError
+    if (!nameError && !passwordError && !verifiedPasswordError) {
       try {
-        const response = await userApi.join(name, email, password);
+        const response = await userApi.join(
+          name,
+          email,
+          password,
+          passwordConfirm
+        );
+        console.log(response);
+
         const {
-          data: { success, error },
+          data: { user },
         } = response;
 
-        if (success) {
+        if (user) {
           history.push("/");
           openSnackBar("success", "회원가입이 성공적으로 완료되었습니다.");
-        } else {
-          if (error === "userExist") {
-            setEmailError(true);
-            setEmailHelperText("해당 이메일이 존재합니다.");
-          }
         }
       } catch (error) {
-        console.log(error);
+        const {
+          response: {
+            data: { error: message },
+          },
+        } = error;
+        console.log(message);
       }
     } else {
-      console.log("에러가 있어요");
+      console.log("An error has occured.");
     }
   };
 

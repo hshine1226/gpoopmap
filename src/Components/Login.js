@@ -72,11 +72,10 @@ function Login({ loginSuccess, openSnackBar, history }) {
         loginSuccess(user);
         openSnackBar("success", "로그인에 성공했습니다.");
         history.push("/");
-      } else {
-        openSnackBar("error", "로그인에 실패했습니다.");
       }
     } catch (error) {
-      console.log(error);
+      openSnackBar("error", "이메일과 비밀번호를 다시 확인해주세요.");
+      console.log("Error", error);
     }
   };
 

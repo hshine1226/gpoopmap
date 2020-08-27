@@ -8,16 +8,17 @@ const api = axios.create({
 });
 
 export const userApi = {
-  join: (name, email, password) => api.post("/join", { name, email, password }),
+  join: (name, email, password, passwordConfirm) =>
+    api.post("/join", { name, email, password, passwordConfirm }),
   login: (email, password) => api.post("/login", { email, password }),
   logout: () => api.get("/logout"),
   getUserByEmail: (email) => api.get("/users/user", { params: { email } }),
-  updateProfile: (id, formData) => api.post(`/users/${id}`, formData),
+  updateProfile: (id, formData) => api.post(`/users/user/${id}`, formData),
 };
 
 export const toiletApi = {
-  uploadToilet: (formData) => api.post("/toilet", formData),
-  nearToilets: (lat, lng) =>
-    api.get("/toilets/nearby", { params: { lat, lng } }),
-  getToilet: (id) => api.get(`/toilet/${id}`),
+  uploadToilet: (formData) => api.post("/toilets/toilet", formData),
+  nearToilets: (lat, lng, maxDistance) =>
+    api.get("/toilets/nearby", { params: { lat, lng, maxDistance } }),
+  getToilet: (id) => api.get(`/toilets/toilet/${id}`),
 };
