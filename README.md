@@ -36,6 +36,8 @@ _"너무 급해 돈을 내도 좋으니 화장실만 찾자..."_ 라는 생각�
 
 - Babel
 
+- Webpack
+
 - Express
 
 - MongoDB
